@@ -6,41 +6,39 @@
 					<el-option key="1" label="广东省" value="广东省"></el-option>
 					<el-option key="2" label="湖南省" value="湖南省"></el-option>
 				</el-select>
-				<el-input v-model="query.name" placeholder="用户名" class="handle-input mr10"></el-input>
+				<el-input v-model="query.username" placeholder="用户名" class="handle-input mr10"></el-input>
 				<el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-				<el-button type="primary" :icon="Plus">新增</el-button>
+				<el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>
 			</div>
-			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-name="table-header">
-				<el-table-column prop="id" label="ID" width="55" align="center"></el-table-column>
-				<el-table-column prop="name" label="用户名"></el-table-column>
-				<el-table-column label="账户余额">
-					<template #default="scope">￥{{ scope.row.money }}</template>
-				</el-table-column>
-				<el-table-column label="头像(查看大图)" align="center">
-					<template #default="scope">
-						<el-image
-							class="table-td-thumb"
-							:src="scope.row.thumb"
-							:z-index="10"
-							:preview-src-list="[scope.row.thumb]"
-							preview-teleported
-						>
-						</el-image>
-					</template>
-				</el-table-column>
+			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-username="table-header">
+				<el-table-column prop="id" label="会员ID" width="100" align="center"></el-table-column>
+				<el-table-column prop="username" label="用户名"></el-table-column>
+				<el-table-column prop="mobile" label="手机号"></el-table-column>
+<!--				<el-table-column label="头像(查看大图)" align="center">-->
+<!--					<template #default="scope">-->
+<!--						<el-image-->
+<!--							class="table-td-thumb"-->
+<!--							:src="scope.row.thumb"-->
+<!--							:z-index="10"-->
+<!--							:preview-src-list="[scope.row.thumb]"-->
+<!--							preview-teleported-->
+<!--						>-->
+<!--						</el-image>-->
+<!--					</template>-->
+<!--				</el-table-column>-->
 				<el-table-column prop="address" label="地址"></el-table-column>
-				<el-table-column label="状态" align="center">
-					<template #default="scope">
-						<el-tag
-							:type="scope.row.state === '成功' ? 'success' : scope.row.state === '失败' ? 'danger' : ''"
-						>
-							{{ scope.row.state }}
-						</el-tag>
-					</template>
-				</el-table-column>
+<!--				<el-table-column label="状态" align="center">-->
+<!--					<template #default="scope">-->
+<!--						<el-tag-->
+<!--							:type="scope.row.state === '成功' ? 'success' : scope.row.state === '失败' ? 'danger' : ''"-->
+<!--						>-->
+<!--							{{ scope.row.state }}-->
+<!--						</el-tag>-->
+<!--					</template>-->
+<!--				</el-table-column>-->
 
-				<el-table-column prop="date" label="注册时间"></el-table-column>
-				<el-table-column label="操作" width="220" align="center">
+				<el-table-column prop="grade" label="会员等级"></el-table-column>
+				<el-table-column label="验光单" width="286" align="center">
 					<template #default="scope">
 						<el-button text :icon="Edit" @click="handleEdit(scope.$index, scope.row)" v-permiss="15">
 							编辑
@@ -67,7 +65,7 @@
 		<el-dialog title="编辑" v-model="editVisible" width="30%">
 			<el-form label-width="70px">
 				<el-form-item label="用户名">
-					<el-input v-model="form.name"></el-input>
+					<el-input v-model="form.username"></el-input>
 				</el-form-item>
 				<el-form-item label="地址">
 					<el-input v-model="form.address"></el-input>
@@ -80,38 +78,115 @@
 				</span>
 			</template>
 		</el-dialog>
+
+		<!-- 编辑弹出框 -->
+		<el-dialog title="新增" v-model="addUserVisible" width="30%">
+			<el-form label-width="70px">
+				<el-form-item label="用户名">
+					<el-input v-model="data.username"></el-input>
+				</el-form-item>
+				<el-form-item label="地址">
+					<el-input v-model="data.address"></el-input>
+				</el-form-item>
+			</el-form>
+			<template #footer>
+				<span class="dialog-footer">
+					<el-button @click="addUserVisible = false">取 消</el-button>
+					<el-button type="primary" @click="saveEdit">确 定</el-button>
+				</span>
+			</template>
+		</el-dialog>
+
 	</div>
 </template>
 
-<script setup lang="ts" name="basetable">
+<script setup lang="ts" username="basetable">
 import { ref, reactive } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
-import { fetchData } from '../api/index';
+import { apiService } from '../api/apiService';
+import { apiUrls } from '../api/apiUrls';
 
 interface TableItem {
 	id: number;
-	name: string;
-	money: string;
+	username: string;
+	mobile: string;
+	address: string;
+	//会员等级
+	grade: string,
+	//验光ID
+	lastOptometryId: number,
 	state: string;
 	date: string;
-	address: string;
 }
 
+interface PageInfo {
+	curPage: number,
+	pageSize: number,
+	totalCount: number,
+	totalPage: number
+}
+
+const data = reactive({
+	username: "1",
+	address: "2"
+});
 const query = reactive({
 	address: '',
-	name: '',
+	username: '',
 	pageIndex: 1,
 	pageSize: 10
 });
-const tableData = ref<TableItem[]>([]);
-const pageTotal = ref(0);
+let tableData = ref<TableItem[]>([]);
+ tableData.value = [
+	{
+	    "id": 1,
+        "username": "sunhao",
+        "mobile": "18279292755",
+        "address": "深圳市宝安区",
+        //会员等级
+        "grade": "1",
+		//验光ID
+		"lastOptometryId": 1,
+		"state": "1",
+        "date": "1",
+},
+	{
+		"id": 2,
+		"username": "sunhao",
+		"mobile": "18279292755",
+		"address": "深圳市宝安区",
+		//会员等级
+		"grade": "1",
+		//验光ID
+		"lastOptometryId": 1,
+		"state": "1",
+		"date": "1",
+	},
+	{
+		"id": 3,
+		"username": "sunhao",
+		"mobile": "18279292755",
+		"address": "深圳市宝安区",
+		//会员等级
+		"grade": "1",
+		//验光ID
+		"lastOptometryId": 1,
+		"state": "1",
+		"date": "1",
+	}];
+const pageInfo: any = ref<PageInfo>();
 // 获取表格数据
 const getData = () => {
-	fetchData().then(res => {
-		tableData.value = res.data.list;
-		pageTotal.value = res.data.pageTotal || 50;
-	});
+	// const data = {
+	// 	"curPage": pageInfo.value.curPage,
+	// 	"mobile": "",
+	// 	"pageSize": pageInfo.value.pageSize,
+	// };
+	// apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
+	// 	tableData.value = res.data.list;
+	// 	pageInfo.value = res.data.pageInfo;
+	// });
 };
 getData();
 
@@ -141,22 +216,27 @@ const handleDelete = (index: number) => {
 
 // 表格编辑时弹窗和保存
 const editVisible = ref(false);
+const addUserVisible = ref(false);
 let form = reactive({
-	name: '',
+	username: '',
 	address: ''
 });
 let idx: number = -1;
 const handleEdit = (index: number, row: any) => {
 	idx = index;
-	form.name = row.name;
+	form.username = row.username;
 	form.address = row.address;
 	editVisible.value = true;
 };
 const saveEdit = () => {
 	editVisible.value = false;
 	ElMessage.success(`修改第 ${idx + 1} 行成功`);
-	tableData.value[idx].name = form.name;
+	tableData.value[idx].username = form.username;
 	tableData.value[idx].address = form.address;
+};
+
+const clickAddUser = () => {
+	addUserVisible.value = true
 };
 </script>
 

@@ -39,6 +39,10 @@ import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import type { FormInstance, FormRules } from 'element-plus';
 import { Lock, User } from '@element-plus/icons-vue';
+import { apiService } from '../api/apiService';
+import { apiUrls } from '../api/apiUrls';
+import { md5Encrypt } from '../api/apiUtils';
+
 
 interface LoginInfo {
 	username: string;
@@ -67,16 +71,36 @@ const submitForm = (formEl: FormInstance | undefined) => {
 	if (!formEl) return;
 	formEl.validate((valid: boolean) => {
 		if (valid) {
-			ElMessage.success('登录成功');
-			localStorage.setItem('ms_username', param.username);
-			const keys = permiss.defaultList[param.username == 'admin' ? 'admin' : 'user'];
-			permiss.handleSet(keys);
-			localStorage.setItem('ms_keys', JSON.stringify(keys));
-			router.push('/');
+			const password:String = md5Encrypt(param.password);
+			console.log('Sun >>> === userName === '+ param.username + ' >>> === password === ' +  password);
+			const data = {
+				username: param.username,
+				password: password
+			};
+			apiService.fetchPostData(apiUrls.doLogin,data).then((res) => {
+				if(!res){
+					return
+				}
+				ElMessage.success('登录成功');
+				localStorage.setItem('ms_username', param.username);
+				localStorage.setItem('ms_password', param.password);
+				router.push('/');
+			});
 		} else {
-			ElMessage.error('登录成功');
+			ElMessage.error('登录失败');
 			return false;
 		}
+		// if (valid) {
+		// 	ElMessage.success('登录成功');
+		// 	localStorage.setItem('ms_username', param.username);
+		// 	const keys = permiss.defaultList[param.username == 'admin' ? 'admin' : 'user'];
+		// 	permiss.handleSet(keys);
+		// 	localStorage.setItem('ms_keys', JSON.stringify(keys));
+		// 	router.push('/');
+		// } else {
+		// 	ElMessage.error('登录成功');
+		// 	return false;
+		// }
 	});
 };
 
