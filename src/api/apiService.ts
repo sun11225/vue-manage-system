@@ -17,7 +17,7 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
     (response: AxiosResponse) => {
-        if (response.status === 200 && response.data.code === 200) {
+        if (response.status === 200) {
             return response;
         } else {
             return Promise.reject(response); // Reject with response for further error handling

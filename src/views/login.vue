@@ -37,7 +37,7 @@ import { useTagsStore } from '../store/tags';
 import { usePermissStore } from '../store/permiss';
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus';
-import type { FormInstance, FormRules } from 'element-plus';
+import { FormInstance, FormRules } from 'element-plus';
 import { Lock, User } from '@element-plus/icons-vue';
 import { apiService } from '../api/apiService';
 import { apiUrls } from '../api/apiUrls';
@@ -63,7 +63,13 @@ const rules: FormRules = {
 			trigger: 'blur'
 		}
 	],
-	password: [{ required: true, message: '请输入密码', trigger: 'blur' }]
+	password: [
+			{
+				required: true,
+				message: '请输入密码',
+				trigger: 'blur'
+			}
+	],
 };
 const permiss = usePermissStore();
 const login = ref<FormInstance>();
@@ -82,8 +88,11 @@ const submitForm = (formEl: FormInstance | undefined) => {
 					return
 				}
 				ElMessage.success('登录成功');
-				localStorage.setItem('ms_username', param.username);
-				localStorage.setItem('ms_password', param.password);
+				const keys = permiss.defaultList[param.username == 'admin' ? 'admin' : 'user'];
+				permiss.handleSet(keys);
+				localStorage.setItem('ms_keys', JSON.stringify(keys));
+				localStorage.setItem('token',res.data.tokenValue);
+				localStorage.setItem('ms_username',param.username);
 				router.push('/');
 			});
 		} else {
