@@ -8,10 +8,10 @@
                 <!--				</el-select>-->
                 <el-input v-model="query.username" placeholder="手机号" class="handle-input mr10"></el-input>
                 <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-                <el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>
+<!--                <el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>-->
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-username="table-header">
-                <el-table-column prop="userId" label="用户编号" width="100" align="center"></el-table-column>
+                <el-table-column prop="userId" label="用户ID" width="100" align="center"></el-table-column>
                 <el-table-column prop="optometryPersonalName" label="验光者姓名"></el-table-column>
                 <!--				<el-table-column label="头像(查看大图)" align="center">-->
                 <!--					<template #default="scope">-->
@@ -38,64 +38,102 @@
 
                 <el-table-column prop="optometrySourceName" label="验光来源单位"></el-table-column>
                 <el-table-column prop="optometryTime" label="验光时间"></el-table-column>
+                <el-table-column label="验光单" width="286" align="center">
+                    <template #default="scope">
+                        <el-button text :icon="Search" @click="queryOptometryData(scope.$index, scope.row)">
+                            查看详情
+                        </el-button>
+                    </template>
+                </el-table-column>
 
 
             </el-table>
             <div class="pagination">
                 <el-pagination
                         layout="total, prev, pager, next"
-                        :current-page="query.pageIndex"
+                        :current-page="query.curPage"
                         :page-size="query.pageSize"
-                        :total="query.totalPage"
+                        :total="query.totalCount"
                         @current-change="handlePageChange"
                 ></el-pagination>
             </div>
         </div>
 
-        <!-- 编辑弹出框 -->
-        <el-dialog title="编辑" v-model="editVisible" width="30%">
-            <el-form label-width="70px">
-                <el-form-item label="用户名">
-                    <el-input v-model="form.username"></el-input>
+        <el-dialog title="验光单详情" v-model="addOptometryVisible" width="70%">
+            <el-form label-width="140px" :inline="true"  :label-position="left" :rules="rules" :model="optometryData" ref="ruleFormRef">
+                <el-form-item label="验光者姓名" prop="optometryPersonalName">
+                    <el-input v-model="optometryData.optometryPersonalName"></el-input>
                 </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="form.address"></el-input>
+                <el-form-item label="验光医生" prop="mark">
+                    <el-input v-model="optometryData.optometryDoctor"></el-input>
+                </el-form-item>
+                <el-form-item label="验光来源单位名称" prop="optometrySourceName">
+                    <el-input v-model="optometryData.optometrySourceName"></el-input>
+                </el-form-item>
+                <el-form-item label="验光时间" prop="optometryTime">
+                    <el-input v-model="optometryData.optometryTime"></el-input>
+                </el-form-item>
+                <el-form-item label="用户编号" prop="userId">
+                    <el-input v-model="optometryData.userId"></el-input>
+                </el-form-item>
+                <el-form-item label="近加光ADD" prop="addd">
+                    <el-input v-model="optometryData.addd"></el-input>
+                </el-form-item>
+                <el-form-item label="验光单类型" prop="optometryType">
+                    <el-select v-model="optometryData.optometryType" class="m-2" placeholder="Select">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="左眼轴位" prop="axisL">
+                    <el-input v-model="optometryData.axisL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼轴位" prop="axisR">
+                    <el-input v-model="optometryData.axisR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼散光度数" prop="cylinderL">
+                    <el-input v-model="optometryData.cylinderL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼散光度数" prop="cylinderR">
+                    <el-input v-model="optometryData.cylinderR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼矫正视力" prop="distanceL">
+                    <el-input v-model="optometryData.distanceL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼矫正视力" prop="distanceR">
+                    <el-input v-model="optometryData.distanceR"></el-input>
+                </el-form-item>
+                <el-form-item label="双眼瞳距" prop="pd">
+                    <el-input v-model="optometryData.pd"></el-input>
+                </el-form-item>
+                <el-form-item label="瞳高" prop="vd">
+                    <el-input v-model="optometryData.vd"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼度数" prop="sphereL">
+                    <el-input v-model="optometryData.sphereL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼度数" prop="sphereR">
+                    <el-input v-model="optometryData.sphereR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼视力" prop="visionL">
+                    <el-input v-model="optometryData.visionL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼视力" prop="visionR">
+                    <el-input v-model="optometryData.visionR"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
 				<span class="dialog-footer">
-					<el-button @click="editVisible = false">取 消</el-button>
-					<el-button type="primary" @click="saveEdit">确 定</el-button>
+					<el-button @click="resetForm(ruleFormRef)">取 消</el-button>
+					<el-button type="primary" @click="submitForm(ruleFormRef)">确 定</el-button>
 				</span>
             </template>
         </el-dialog>
 
-        <!-- 新增用户 -->
-        <el-dialog title="新增" v-model="addUserVisible" width="30%">
-            <el-form label-width="70px">
-                <el-form-item label="会员ID">
-                    <el-input v-model="data.id"></el-input>
-                </el-form-item>
-                <el-form-item label="用户名">
-                    <el-input v-model="data.username"></el-input>
-                </el-form-item>
-                <el-form-item label="手机号">
-                    <el-input v-model="data.mobile"></el-input>
-                </el-form-item>
-                <el-form-item label="地址">
-                    <el-input v-model="data.address"></el-input>
-                </el-form-item>
-                <el-form-item label="会员等级">
-                    <el-input v-model="data.grade"></el-input>
-                </el-form-item>
-            </el-form>
-            <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="addUserVisible = false">取 消</el-button>
-					<el-button type="primary" @click="saveEdit">确 定</el-button>
-				</span>
-            </template>
-        </el-dialog>
 
     </div>
 </template>
@@ -107,11 +145,50 @@
     import { apiService } from '../api/apiService';
     import { apiUrls } from '../api/apiUrls';
     import { useRouter,useRoute  } from 'vue-router';
+    import { FormInstance, FormRules } from 'element-plus';
+
 
 
     const router = useRouter();
     const route = useRoute();
     const userId = ref<string>();
+    const addOptometryVisible = ref(false);
+
+
+    interface TableItem {
+        id: number,
+        addd: string,
+        axisL: string,
+        axisR: string,
+        cylinderL: string,
+        cylinderR: string,
+        distanceL: string,
+        distanceR: string,
+        isDefault: boolean,
+        mark: string,
+        optometryDoctor: string,
+        optometryPersonalName: string,
+        optometrySourceName: string,
+        optometryTime: string,
+        optometryType: boolean,
+        pd: string,
+        sphereL: string,
+        sphereR: string,
+        userId: number,
+        vd: string,
+        visionL: string,
+        visionR: string,
+        createTime: string,
+    }
+
+    let query = reactive({
+        curPage: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPage: 0,
+    });
+    let tableData = ref<TableItem[]>([]);
+    let optometryData = ref<TableItem>();
 
     onMounted(() => {
         if (route.query.id) {
@@ -119,7 +196,7 @@
             userId.value = route.query.id as string;
             const data = {
                 userId: 243,//userId.value,
-                curPage: query.pageIndex,
+                curPage: query.curPage,
                 pageSize: query.pageSize,
             };
             apiService.fetchPostData(apiUrls.queryOptometry,data).then((res) => {
@@ -127,66 +204,64 @@
                     return
                 }
                 ElMessage.success('查询验光单成功');
+                tableData.value = res.data;
+                query.curPage = res.pageInfo.curPage;
+                query.pageSize = res.pageInfo.pageSize;
+                query.totalCount = res.pageInfo.totalCount;
+                query.totalPage =  res.pageInfo.totalPage;
+                console.log('Sun >>> === ' + JSON.stringify(query))
 
             })
         }
 
     });
 
-    interface TableItem {
-        userId: number,
-        optometryPersonalName: string;
-        optometryDoctor: string;
-        optometrySourceName: string;
-        optometryTime: string;
-    }
-
-    interface PageInfo {
-        curPage: number,
-        pageSize: number,
-        totalCount: number,
-        totalPage: number
-    }
-
-    const data = reactive({
-        id:"",
-        username: "",
-        mobile: "",
-        address: "",
-        grade: "",
-
-    });
-    const query = reactive({
-        pageIndex: 1,
-        pageSize: 10,
-        totalCount: 0,
-        totalPage: 0,
-    });
-    let tableData = ref<TableItem[]>([]);
-    const pageInfo: any = ref<PageInfo>();
     // 获取表格数据
     const getData = () => {
-        // const data = {
-        // 	"curPage": pageInfo.value.curPage,
-        // 	"mobile": "",
-        // 	"pageSize": pageInfo.value.pageSize,
-        // };
-        // apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
-        // 	tableData.value = res.data.list;
-        // 	pageInfo.value = res.data.pageInfo;
-        // });
+        const data = {
+            userId: 243,//userId.value,
+            curPage: query.curPage,
+            pageSize: query.pageSize,
+        };
+        apiService.fetchPostData(apiUrls.queryOptometry,data).then((res) => {
+            if (res.code != 200){
+                return
+            }
+            ElMessage.success('查询验光单成功');
+            tableData.value = res.data.data;
+            query.curPage = res.pageInfo.curPage;
+            query.pageSize = res.pageInfo.pageSize;
+            query.totalCount = res.pageInfo.totalCount;
+            query.totalPage =  res.pageInfo.totalPage;
+        })
     };
-    getData();
 
-    // 查询操作
-    const handleSearch = () => {
-        query.pageIndex = 1;
-        getData();
+    //查询验光单
+    const queryOptometryData = (index: number, row: any) => {
+        optometryData.value = tableData.value[0];
+        addOptometryVisible.value = true;
+
     };
     // 分页导航
     const handlePageChange = (val: number) => {
-        query.pageIndex = val;
+        query.curPage = val;
         getData();
+    };
+
+    // 查询操作
+    const handleSearch = () => {
+        query.curPage = 1;
+        getData();
+    };
+
+    const closeForm = (formEl: FormInstance | undefined) => {
+        if (!formEl) return;
+        addOptometryVisible.value = false;
+    };
+
+    const submitForm = (formEl: FormInstance | undefined) => {
+        if (!formEl) return;
+        addOptometryVisible.value = false;
     };
 
     // 删除操作

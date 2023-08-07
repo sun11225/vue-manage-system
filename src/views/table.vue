@@ -56,9 +56,9 @@
 				<el-pagination
 					background
 					layout="total, prev, pager, next"
-					:current-page="query.pageIndex"
+					:current-page="query.curPage"
 					:page-size="query.pageSize"
-					:total="query.totalPage"
+					:total="query.totalCount"
 					@current-change="handlePageChange"
 				></el-pagination>
 			</div>
@@ -88,8 +88,8 @@
 				<el-form-item label="验光者姓名" prop="optometryPersonalName">
 					<el-input v-model="optometryData.optometryPersonalName"></el-input>
 				</el-form-item>
-				<el-form-item label="验光医生" prop="mark">
-					<el-input v-model="optometryData.mark"></el-input>
+				<el-form-item label="验光医生" prop="optometryDoctor">
+					<el-input v-model="optometryData.optometryDoctor"></el-input>
 				</el-form-item>
 				<el-form-item label="验光来源单位名称" prop="optometrySourceName">
 					<el-input v-model="optometryData.optometrySourceName"></el-input>
@@ -97,6 +97,9 @@
 				<el-form-item label="验光时间" prop="optometryTime">
 					<el-input v-model="optometryData.optometryTime"></el-input>
 				</el-form-item>
+                <el-form-item label="用户编号" prop="userId">
+                    <el-input v-model="optometryData.userId"></el-input>
+                </el-form-item>
 				<el-form-item label="近加光ADD" prop="addd">
 					<el-input v-model="optometryData.addd"></el-input>
 				</el-form-item>
@@ -140,15 +143,15 @@
 				<el-form-item label="右眼度数" prop="sphereR">
 					<el-input v-model="optometryData.sphereR"></el-input>
 				</el-form-item>
-				<el-form-item label="用户编号" prop="userId">
-					<el-input v-model="optometryData.userId"></el-input>
-				</el-form-item>
 				<el-form-item label="左眼视力" prop="visionL">
 					<el-input v-model="optometryData.visionL"></el-input>
 				</el-form-item>
 				<el-form-item label="右眼视力" prop="visionR">
 					<el-input v-model="optometryData.visionR"></el-input>
 				</el-form-item>
+                <el-form-item label="说明" prop="mark">
+                    <el-input v-model="optometryData.mark"></el-input>
+                </el-form-item>
 			</el-form>
 			<template #footer>
 				<span class="dialog-footer">
@@ -162,7 +165,7 @@
 </template>
 
 <script setup lang="ts" username="basetable">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted } from 'vue';
 import { ElMessage, ElMessageBox } from 'element-plus';
 import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
 import { apiService } from '../api/apiService';
@@ -352,7 +355,6 @@ const optometryData = reactive({
 	cylinderR: "",
 	distanceL: "",
 	distanceR: "",
-	isDefault: 0,
 	mark: "",
 	optometryDoctor: "",
 	optometryPersonalName: "",
@@ -369,8 +371,8 @@ const optometryData = reactive({
 });
 
 const mobilePhone = ref();
-const query = reactive({
-	pageIndex: 1,
+let query = reactive({
+	curPage: 1,
 	pageSize: 10,
 	totalCount: 0,
 	totalPage: 0,
@@ -426,20 +428,26 @@ let tableData = ref<TableItem[]>([]);
 // 获取表格数据
 const getData = () => {
 	const data = {
-		curPage: query.pageIndex,
+		curPage: query.curPage,
 		pageSize: query.pageSize,
 	};
 	apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
-		// tableData.value = res.data.list;
-		// pageInfo.value = res.data.pageInfo;
+		tableData.value = res.data;
+		query.curPage = res.pageInfo.curPage;
+		query.pageSize = res.pageInfo.pageSize;
+		query.totalCount = res.pageInfo.totalCount;
+		query.totalPage =  res.pageInfo.totalPage;
 	});
 };
-getData();
+
+   onMounted(() => {
+      getData();
+   });
 
 const getVipUserInfo = () => {
 	const data = {
 		mobile: mobilePhone.value,
-		curPage: query.pageIndex,
+		curPage: query.curPage,
 		pageSize: query.pageSize,
 	};
 	apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
@@ -450,18 +458,18 @@ const getVipUserInfo = () => {
 
 //重置
 const handleReset = () => {
-	query.pageIndex = 1;
+	query.curPage = 1;
 	getData()
 };
 
 // 查询操作
 const handleSearch = () => {
-	query.pageIndex = 1;
+	query.curPage = 1;
 	getVipUserInfo();
 };
 // 分页导航
 const handlePageChange = (val: number) => {
-	query.pageIndex = val;
+	query.curPage = val;
 	getData();
 };
 
