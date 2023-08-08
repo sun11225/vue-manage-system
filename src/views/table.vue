@@ -11,7 +11,7 @@
 				<el-button type="primary" @click="handleReset">重置</el-button>
 			</div>
 			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-username="table-header">
-				<el-table-column prop="id" label="会员ID" width="120" align="center"></el-table-column>
+				<el-table-column prop="id" label="会员ID" align="center"></el-table-column>
 				<el-table-column prop="username" label="用户名"></el-table-column>
 				<el-table-column prop="mobile" label="手机号"></el-table-column>
 <!--				<el-table-column label="头像(查看大图)" align="center">-->
@@ -38,15 +38,12 @@
 <!--				</el-table-column>-->
 
 				<el-table-column prop="grade" label="会员等级"></el-table-column>
-				<el-table-column label="验光单" width="286" align="center">
+				<el-table-column label="验光单" align="center">
 					<template #default="scope">
-						<el-button text :icon="Edit" @click="addOptometryData">
+						<el-button text :icon="Edit" type="primary"  @click="addOptometryData">
 							新增
 						</el-button>
-<!--						<el-button text :icon="Edit" @click="handleEdit(scope.$index, scope.row)" v-permiss="15">-->
-<!--							编辑-->
-<!--						</el-button>-->
-						<el-button text :icon="Search" @click="queryOptometryData(scope.$index, scope.row)">
+						<el-button text :icon="Search" type="success" @click="queryOptometryData(scope.$index, scope.row)">
 							查询
 						</el-button>
 					</template>
@@ -84,7 +81,10 @@
 
 		<!-- 新增验光单 -->
 		<el-dialog title="新增验光单" v-model="addOptometryVisible" width="70%">
-			<el-form label-width="140px" :inline="true"  :label-position="left" :rules="rules" :model="optometryData" ref="ruleFormRef">
+			<el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
+				<el-form-item label="用户编号" prop="userId">
+					<el-input v-model="optometryData.userId"></el-input>
+				</el-form-item>
 				<el-form-item label="验光者姓名" prop="optometryPersonalName">
 					<el-input v-model="optometryData.optometryPersonalName"></el-input>
 				</el-form-item>
@@ -97,9 +97,6 @@
 				<el-form-item label="验光时间" prop="optometryTime">
 					<el-input v-model="optometryData.optometryTime"></el-input>
 				</el-form-item>
-                <el-form-item label="用户编号" prop="userId">
-                    <el-input v-model="optometryData.userId"></el-input>
-                </el-form-item>
 				<el-form-item label="近加光ADD" prop="addd">
 					<el-input v-model="optometryData.addd"></el-input>
 				</el-form-item>
@@ -165,16 +162,14 @@
 </template>
 
 <script setup lang="ts" username="basetable">
-import { ref, reactive, onMounted } from 'vue';
-import { ElMessage, ElMessageBox } from 'element-plus';
-import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
-import { apiService } from '../api/apiService';
-import { apiUrls } from '../api/apiUrls';
-import { useRouter  } from 'vue-router';
-import { FormInstance, FormRules } from 'element-plus';
+	import {onMounted, reactive, ref} from 'vue';
+	import {ElMessage, ElMessageBox, FormInstance, FormRules} from 'element-plus';
+	import {apiService} from '../api/apiService';
+	import {apiUrls} from '../api/apiUrls';
+	import {useRouter} from 'vue-router';
+	import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
 
-
-const router = useRouter();
+	const router = useRouter();
 
 const options = [
 	{
@@ -336,7 +331,7 @@ interface TableItem {
 	headPortraitUrl: string,
 	id: string;
 	//验光ID
-	lastOptometryId: number,
+	lastOptometryId: string,
 	mobile: string;
 	username: string;
 	nickname: string,
@@ -370,7 +365,7 @@ const optometryData = reactive({
 	visionR: ""
 });
 
-const mobilePhone = ref();
+const mobilePhone = ref("");
 let query = reactive({
 	curPage: 1,
 	pageSize: 10,
@@ -405,6 +400,7 @@ const getVipUserInfo = () => {
 		pageSize: query.pageSize,
 	};
 	apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
+		ElMessage.success("查询成功");
 		tableData.value = res.data;
 		query.curPage = res.pageInfo.curPage;
 		query.pageSize = res.pageInfo.pageSize;
@@ -421,8 +417,12 @@ const handleReset = () => {
 
 // 查询操作
 const handleSearch = () => {
-	query.curPage = 1;
-	getVipUserInfo();
+	if(mobilePhone.value != "") {
+		query.curPage = 1;
+		getVipUserInfo();
+	} else {
+		ElMessage.error("请输入正确的手机号")
+	}
 };
 // 分页导航
 const handlePageChange = (val: number) => {
