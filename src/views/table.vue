@@ -11,7 +11,7 @@
 				<el-button type="primary" @click="handleReset">重置</el-button>
 			</div>
 			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-username="table-header">
-				<el-table-column prop="id" label="会员ID" width="100" align="center"></el-table-column>
+				<el-table-column prop="id" label="会员ID" width="120" align="center"></el-table-column>
 				<el-table-column prop="username" label="用户名"></el-table-column>
 				<el-table-column prop="mobile" label="手机号"></el-table-column>
 <!--				<el-table-column label="头像(查看大图)" align="center">-->
@@ -334,7 +334,7 @@ const rules: FormRules = {
 interface TableItem {
 	email: string,
 	headPortraitUrl: string,
-	id: number;
+	id: string;
 	//验光ID
 	lastOptometryId: number,
 	mobile: string;
@@ -378,52 +378,6 @@ let query = reactive({
 	totalPage: 0,
 });
 let tableData = ref<TableItem[]>([]);
- tableData.value = [
-	{
-	    id: 1,
-        username: "孙昊",
-        mobile: "18279292755",
-        address: "深圳市宝安区",
-        //会员等级
-        grade: "1",
-		//验光ID
-		lastOptometryId: 1,
-		state: "1",
-        date: "1",
-		email: "",
-		nickname: "",
-		headPortraitUrl:""
-},
-	{
-		id: 2,
-		username: "张阳",
-		mobile: "18279292755",
-		address: "深圳市宝安区",
-		//会员等级
-		grade: "1",
-		//验光ID
-		lastOptometryId: 1,
-		state: "1",
-		date: "1",
-		email: "",
-		nickname: "",
-		headPortraitUrl:""
-	},
-	{
-		id: 3,
-		username: "小红",
-		mobile: "18279292755",
-		address: "深圳市宝安区",
-		//会员等级
-		grade: "1",
-		//验光ID
-		lastOptometryId: 1,
-		state: "1",
-		date: "1",
-		email: "",
-		nickname: "",
-		headPortraitUrl:""
-	}];
 
 // 获取表格数据
 const getData = () => {
@@ -451,8 +405,11 @@ const getVipUserInfo = () => {
 		pageSize: query.pageSize,
 	};
 	apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
-		// tableData.value = res.data.list;
-		// pageInfo.value = res.data.pageInfo;
+		tableData.value = res.data;
+		query.curPage = res.pageInfo.curPage;
+		query.pageSize = res.pageInfo.pageSize;
+		query.totalCount = res.pageInfo.totalCount;
+		query.totalPage =  res.pageInfo.totalPage;
 	});
 };
 

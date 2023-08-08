@@ -12,6 +12,7 @@ export const apiUrls = {
     queryOptometry: '/OptometryBills/list',
     addOptometry: '/OptometryBills/save',
     updateOptometry: '/OptometryBills/update',
+    getOptometryDetails: '/OptometryBills/getDetails',
 
 
 };

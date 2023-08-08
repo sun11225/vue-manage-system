@@ -6,7 +6,7 @@
                 <!--					<el-option key="1" label="广东省" value="广东省"></el-option>-->
                 <!--					<el-option key="2" label="湖南省" value="湖南省"></el-option>-->
                 <!--				</el-select>-->
-                <el-input v-model="query.username" placeholder="手机号" class="handle-input mr10"></el-input>
+                <el-input v-model="query.username" placeholder="用户ID" class="handle-input mr10"></el-input>
                 <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
 <!--                <el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>-->
             </div>
@@ -59,7 +59,7 @@
             </div>
         </div>
 
-        <el-dialog title="验光单详情" v-model="addOptometryVisible" width="70%">
+        <el-dialog title="验光单详情" v-model="optometryDetailVisible" width="70%">
             <el-form label-width="140px" :inline="true"  :label-position="left" :rules="rules" :model="optometryData" ref="ruleFormRef">
                 <el-form-item label="验光者姓名" prop="optometryPersonalName">
                     <el-input v-model="optometryData.optometryPersonalName"></el-input>
@@ -126,12 +126,12 @@
                     <el-input v-model="optometryData.visionR"></el-input>
                 </el-form-item>
             </el-form>
-            <template #footer>
-				<span class="dialog-footer">
-					<el-button @click="resetForm(ruleFormRef)">取 消</el-button>
-					<el-button type="primary" @click="submitForm(ruleFormRef)">确 定</el-button>
-				</span>
-            </template>
+<!--            <template #footer>-->
+<!--				<span class="dialog-footer">-->
+<!--					<el-button @click="resetForm(ruleFormRef)">取 消</el-button>-->
+<!--					<el-button type="primary" @click="submitForm(ruleFormRef)">确 定</el-button>-->
+<!--				</span>-->
+<!--            </template>-->
         </el-dialog>
 
 
@@ -156,7 +156,7 @@
 
 
     interface TableItem {
-        id: number,
+        id: string,
         addd: string,
         axisL: string,
         axisR: string,
@@ -170,7 +170,7 @@
         optometryPersonalName: string,
         optometrySourceName: string,
         optometryTime: string,
-        optometryType: boolean,
+        optometryType: number,
         pd: string,
         sphereL: string,
         sphereR: string,
@@ -189,13 +189,14 @@
     });
     let tableData = ref<TableItem[]>([]);
     let optometryData = ref<TableItem>();
+    let optometryDetailVisible = ref<boolean>(false);
 
     onMounted(() => {
         if (route.query.id) {
             console.log('Sun >>> id === ' + route.query.id);
             userId.value = route.query.id as string;
             const data = {
-                userId: 243,//userId.value,
+                userId: userId.value,
                 curPage: query.curPage,
                 pageSize: query.pageSize,
             };
@@ -219,7 +220,7 @@
     // 获取表格数据
     const getData = () => {
         const data = {
-            userId: 243,//userId.value,
+            userId: userId.value,
             curPage: query.curPage,
             pageSize: query.pageSize,
         };
@@ -238,8 +239,17 @@
 
     //查询验光单
     const queryOptometryData = (index: number, row: any) => {
-        optometryData.value = tableData.value[0];
-        addOptometryVisible.value = true;
+        const data = {
+            optometryId: row.id
+        };
+        console.log('sUN >>> optometryId: row.id === ' + row.id);
+        apiService.fetchPostData(apiUrls.getOptometryDetails,data).then((res) => {
+            if (res.code != 200){
+                return
+            }
+            optometryData.value = res.data;
+            optometryDetailVisible.value = true;
+        });
 
     };
     // 分页导航
@@ -256,12 +266,12 @@
 
     const closeForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return;
-        addOptometryVisible.value = false;
+        optometryDetailVisible.value = false;
     };
 
     const submitForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return;
-        addOptometryVisible.value = false;
+        optometryDetailVisible.value = false;
     };
 
     // 删除操作
@@ -277,28 +287,6 @@
             .catch(() => {});
     };
 
-    // 表格编辑时弹窗和保存
-    const editVisible = ref(false);
-    const addUserVisible = ref(false);
-    let form = reactive({
-        username: '',
-        address: ''
-    });
-    let idx: number = -1;
-    const handleEdit = (index: number, row: any) => {
-        idx = index;
-        form.username = row.username;
-        form.address = row.address;
-        editVisible.value = true;
-    };
-    const saveEdit = () => {
-        editVisible.value = false;
-        ElMessage.success(`修改第 ${idx + 1} 行成功`);
-    };
-
-    const clickAddUser = () => {
-        addUserVisible.value = true
-    };
 </script>
 
 <style scoped>
