@@ -38,7 +38,7 @@
 <!--				</el-table-column>-->
 
 				<el-table-column prop="grade" label="会员等级"></el-table-column>
-				<el-table-column label="验光单" align="center">
+				<el-table-column label="验光单" width="240" align="center">
 					<template #default="scope">
 						<el-button text :icon="Edit" type="primary"  @click="addOptometryData">
 							新增
@@ -80,7 +80,7 @@
 		</el-dialog>
 
 		<!-- 新增验光单 -->
-		<el-dialog title="新增验光单" v-model="addOptometryVisible" width="70%">
+		<el-dialog title="新增验光单" v-model="addOptometryVisible" :show-close="false" width="70%">
 			<el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
 				<el-form-item label="用户编号" prop="userId">
 					<el-input v-model="optometryData.userId"></el-input>

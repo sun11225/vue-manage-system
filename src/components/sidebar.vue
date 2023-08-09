@@ -56,24 +56,24 @@ import { useSidebarStore } from '../store/sidebar';
 import { useRoute } from 'vue-router';
 
 const items = [
-    {
-        icon: 'Odometer',
-        index: '/dashboard',
-        title: '系统首页',
-        permiss: '1',
-    },
+    // {
+    //     icon: 'Odometer',
+    //     index: '/dashboard',
+    //     title: '系统首页',
+    //     permiss: '1',
+    // },
     {
         icon: 'DocumentCopy',
         index: '/table',
         title: '会员信息',
         permiss: '2',
     },
-    {
-        icon: 'DocumentCopy',
-        index: '/optometry',
-        title: '验光单',
-        permiss: '3',
-    },
+    // {
+    //     icon: 'DocumentCopy',
+    //     index: '/optometry',
+    //     title: '验光单',
+    //     permiss: '3',
+    // },
     // {
     //     icon: 'Calendar',
     //     index: '1',

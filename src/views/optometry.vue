@@ -6,11 +6,12 @@
                 <!--					<el-option key="1" label="广东省" value="广东省"></el-option>-->
                 <!--					<el-option key="2" label="湖南省" value="湖南省"></el-option>-->
                 <!--				</el-select>-->
-                <el-input v-model="queryUserId" placeholder="用户ID" class="handle-input mr10"></el-input>
+                <el-input v-model="queryUserId" placeholder="请输入用户ID" class="handle-input mr10"></el-input>
                 <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-<!--                <el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>-->
+                <!--                <el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>-->
             </div>
-            <el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-username="table-header">
+            <el-table :data="tableData" border class="table" ref="multipleTable"
+                      header-cell-class-username="table-header">
                 <el-table-column prop="userId" label="用户ID" align="center"></el-table-column>
                 <el-table-column prop="optometryPersonalName" label="验光者姓名"></el-table-column>
                 <!--				<el-table-column label="头像(查看大图)" align="center">-->
@@ -38,14 +39,20 @@
 
                 <el-table-column prop="optometrySourceName" label="验光来源单位"></el-table-column>
                 <el-table-column prop="optometryTime" label="验光时间"></el-table-column>
-                <el-table-column label="验光单" align="center">
+                <el-table-column label="验光单" width="243" align="center">
                     <template #default="scope">
-                        <el-button text type="primary" :icon="Edit" @click="editOptometryData(scope.$index, scope.row)">
-                            编辑
-                        </el-button>
-                        <el-button text type="danger" :icon="Delete" @click="handleDelete(scope.$index, scope.row)">
-                            删除
-                        </el-button>
+                        <el-button-group class="ml-4">
+                            <el-button text type="primary" :icon="Edit"
+                                       @click="optometryDataDetails(scope.$index, scope.row)">
+                                详情
+                            </el-button>
+                            <el-button text type="primary" :icon="Edit"
+                                       @click="editOptometryData(scope.$index, scope.row)">
+                                编辑
+                            </el-button>
+                            <el-button text type="danger" :icon="Delete" @click="handleDelete(scope.$index, scope.row)">
+                            </el-button>
+                        </el-button-group>
                     </template>
                 </el-table-column>
 
@@ -62,7 +69,7 @@
             </div>
         </div>
 
-        <el-dialog title="编辑验光单" v-model="optometryDetailVisible" width="70%">
+        <el-dialog title="编辑验光单" v-model="editOptometryDetailVisible" :show-close="false" width="70%">
             <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryUpdateData" ref="ruleFormRef">
                 <el-form-item label="用户编号" prop="userId">
                     <el-input v-model="optometryUpdateData.userId"></el-input>
@@ -137,18 +144,121 @@
             </template>
         </el-dialog>
 
+        <el-dialog title="验光单详情" v-model="optometryDetailVisible" :fullscreen="false" :show-close="false" width="80%">
+            <div style="display: flex;justify-content: space-between;flex-direction: column">
+
+                <div style="display: flex;flex-direction: row;align-items: center">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>用户编号:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.userId}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;margin-left: 30px">
+                        <text>验光者姓名:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.optometryPersonalName}}</text>
+                    </div>
+                </div>
+
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>验光医生:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.optometryDoctor}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>验光来源单位名称:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.optometrySourceName}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>验光时间:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.optometryTime}}</text>
+                    </div>
+                </div>
+
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <text>验光单类型:</text>
+                    <text style="margin-left: 12px">{{optometryTypeData}}</text>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <text>近加光ADD:</text>
+                    <text style="margin-left: 12px">{{optometryUpdateData.addd}}</text>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;">
+                        <text>左眼轴位:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.axisL}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;margin-left: 30px">
+                        <text>右眼轴位:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.axisR}}</text>
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>左眼散光度数:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.cylinderL}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>右眼散光度数:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.cylinderR}}</text>
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>左眼矫正视力:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.distanceL}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>右眼矫正视力:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.distanceR}}</text>
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>双眼瞳距:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.pd}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>瞳高:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.vd}}</text>
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>左眼度数:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.sphereL}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>右眼度数:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.sphereR}}</text>
+                    </div>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
+                    <div style="display: flex;flex-direction: row;align-items: center;">
+                        <text>左眼视力:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.visionL}}</text>
+                    </div>
+                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
+                        <text>右眼视力:</text>
+                        <text style="margin-left: 12px">{{optometryUpdateData.visionR}}</text>
+
+                    </div>
+                </div>
+
+            </div>
+
+        </el-dialog>
+
 
     </div>
 </template>
 
 <script setup lang="ts" username="basetable">
-    import { ref, reactive,onMounted } from 'vue';
-    import { ElMessage, ElMessageBox } from 'element-plus';
-    import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
-    import { apiService } from '../api/apiService';
-    import { apiUrls } from '../api/apiUrls';
-    import { useRouter,useRoute  } from 'vue-router';
-    import { FormInstance, FormRules } from 'element-plus';
+    import {ref, reactive, onMounted} from 'vue';
+    import {ElMessage, ElMessageBox} from 'element-plus';
+    import {Delete, Edit, Search, Plus} from '@element-plus/icons-vue';
+    import {apiService} from '../api/apiService';
+    import {apiUrls} from '../api/apiUrls';
+    import {useRouter, useRoute} from 'vue-router';
+    import {FormInstance, FormRules} from 'element-plus';
 
     const options = [
         {
@@ -316,8 +426,8 @@
     let queryUserId = ref<string>("");
     let userId = ref<string>();
     let tableData = ref<TableItem[]>([]);
-    let optometryData = ref<TableItem>();
     let optometryDetailVisible = ref<boolean>(false);
+    let editOptometryDetailVisible = ref<boolean>(false);
     let optometryTypeData = ref();
 
 
@@ -383,8 +493,8 @@
                 curPage: query.curPage,
                 pageSize: query.pageSize,
             };
-            apiService.fetchPostData(apiUrls.queryOptometry,data).then((res) => {
-                if (res.code != 200){
+            apiService.fetchPostData(apiUrls.queryOptometry, data).then((res) => {
+                if (res.code != 200) {
                     return
                 }
                 ElMessage.success('查询验光单成功');
@@ -392,7 +502,7 @@
                 query.curPage = res.pageInfo.curPage;
                 query.pageSize = res.pageInfo.pageSize;
                 query.totalCount = res.pageInfo.totalCount;
-                query.totalPage =  res.pageInfo.totalPage;
+                query.totalPage = res.pageInfo.totalPage;
                 console.log('Sun >>> === ' + JSON.stringify(query))
 
             })
@@ -407,8 +517,8 @@
             curPage: query.curPage,
             pageSize: query.pageSize,
         };
-        apiService.fetchPostData(apiUrls.queryOptometry,data).then((res) => {
-            if (res.code != 200){
+        apiService.fetchPostData(apiUrls.queryOptometry, data).then((res) => {
+            if (res.code != 200) {
                 return
             }
             ElMessage.success('查询验光单成功');
@@ -416,18 +526,18 @@
             query.curPage = res.pageInfo.curPage;
             query.pageSize = res.pageInfo.pageSize;
             query.totalCount = res.pageInfo.totalCount;
-            query.totalPage =  res.pageInfo.totalPage;
+            query.totalPage = res.pageInfo.totalPage;
         })
     };
 
-    //查询验光单
+    //编辑验光单
     const editOptometryData = (index: number, row: any) => {
         const data = {
             optometryId: row.id
         };
         console.log('Sun >>> optometryId: row.id === ' + row.id);
-        apiService.fetchPostData(apiUrls.getOptometryDetails,data).then((res) => {
-            if (res.code != 200){
+        apiService.fetchPostData(apiUrls.getOptometryDetails, data).then((res) => {
+            if (res.code != 200) {
                 return
             }
             optometryUpdateData.id = res.data.id;
@@ -453,14 +563,56 @@
             optometryUpdateData.visionL = res.data.visionL;
             optometryUpdateData.visionR = res.data.visionR;
             optometryUpdateData.createTime = res.data.createTime;
-            if(optometryUpdateData.optometryType == 1){
+            if (optometryUpdateData.optometryType == 1) {
+                optometryTypeData.value = "框架眼镜验光单"
+            } else {
+                optometryTypeData.value = "隐形眼镜验光单"
+            }
+            editOptometryDetailVisible.value = true;
+        });
+
+    };
+
+    //查看验光单详情
+    const optometryDataDetails = (index: number, row: any) => {
+        const data = {
+            optometryId: row.id
+        };
+        console.log('Sun >>> optometryId: row.id === ' + row.id);
+        apiService.fetchPostData(apiUrls.getOptometryDetails, data).then((res) => {
+            if (res.code != 200) {
+                return
+            }
+            optometryUpdateData.id = res.data.id;
+            optometryUpdateData.addd = res.data.addd;
+            optometryUpdateData.axisL = res.data.axisL;
+            optometryUpdateData.axisR = res.data.axisR;
+            optometryUpdateData.cylinderL = res.data.cylinderL;
+            optometryUpdateData.cylinderR = res.data.cylinderR;
+            optometryUpdateData.distanceL = res.data.distanceL;
+            optometryUpdateData.distanceR = res.data.distanceR;
+            optometryUpdateData.isDefault = res.data.isDefault;
+            optometryUpdateData.mark = res.data.mark;
+            optometryUpdateData.optometryDoctor = res.data.optometryDoctor;
+            optometryUpdateData.optometryPersonalName = res.data.optometryPersonalName;
+            optometryUpdateData.optometrySourceName = res.data.optometrySourceName;
+            optometryUpdateData.optometryTime = res.data.optometryTime;
+            optometryUpdateData.optometryType = res.data.optometryType;
+            optometryUpdateData.pd = res.data.pd;
+            optometryUpdateData.sphereL = res.data.sphereL;
+            optometryUpdateData.sphereR = res.data.sphereR;
+            optometryUpdateData.userId = res.data.userId;
+            optometryUpdateData.vd = res.data.vd;
+            optometryUpdateData.visionL = res.data.visionL;
+            optometryUpdateData.visionR = res.data.visionR;
+            optometryUpdateData.createTime = res.data.createTime;
+            if (optometryUpdateData.optometryType == 1) {
                 optometryTypeData.value = "框架眼镜验光单"
             } else {
                 optometryTypeData.value = "隐形眼镜验光单"
             }
             optometryDetailVisible.value = true;
         });
-
     };
 
     // 分页导航
@@ -471,7 +623,7 @@
 
     // 查询操作
     const handleSearch = () => {
-        if(queryUserId.value != "") {
+        if (queryUserId.value != "") {
             query.curPage = 1;
             userId.value = queryUserId.value;
             getData();
@@ -482,7 +634,7 @@
 
     const closeForm = (formEl: FormInstance | undefined) => {
         if (!formEl) return;
-        optometryDetailVisible.value = false;
+        editOptometryDetailVisible.value = false;
     };
 
     const submitForm = (formEl: FormInstance | undefined) => {
@@ -493,13 +645,13 @@
         } else {
             optometryUpdateData.optometryType = optometryTypeData.value
         }
-        apiService.fetchPostData(apiUrls.updateOptometry,optometryUpdateData).then((res) => {
-            if (res.code != 200){
+        apiService.fetchPostData(apiUrls.updateOptometry, optometryUpdateData).then((res) => {
+            if (res.code != 200) {
                 return
             }
             ElMessage.success("修改成功");
             getData();
-            optometryDetailVisible.value = false;
+            editOptometryDetailVisible.value = false;
         })
     };
 
@@ -514,15 +666,16 @@
                     ids: [row.id]
                 };
                 console.log('SUn >>> ids === ' + JSON.stringify(data));
-                apiService.fetchPostData(apiUrls.deleteOptometry,data).then((res) => {
-                    if (res.code != 200){
+                apiService.fetchPostData(apiUrls.deleteOptometry, data).then((res) => {
+                    if (res.code != 200) {
                         return
                     }
                     ElMessage.success('删除成功');
                     getData();
                 });
             })
-            .catch(() => {});
+            .catch(() => {
+            });
     };
 
 </script>
@@ -539,16 +692,20 @@
     .handle-input {
         width: 300px;
     }
+
     .table {
         width: 100%;
         font-size: 14px;
     }
+
     .red {
         color: #F56C6C;
     }
+
     .mr10 {
         margin-right: 10px;
     }
+
     .table-td-thumb {
         display: block;
         margin: auto;
