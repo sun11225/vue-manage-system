@@ -144,106 +144,65 @@
             </template>
         </el-dialog>
 
-        <el-dialog title="验光单详情" v-model="optometryDetailVisible" :fullscreen="false" :show-close="false" width="80%">
-            <div style="display: flex;justify-content: space-between;flex-direction: column">
+        <el-dialog title="验光单详情" v-model="optometryDetailVisible" :fullscreen="false" :show-close="false" width="86%">
+            <table style="margin-top: -12px">
+                <tbody>
+                <tr>
+                    <td>用户编号</td>
+                    <td>{{optometryUpdateData.userId}}</td>
+                    <td>验光者姓名</td>
+                    <td>{{optometryUpdateData.optometryPersonalName}}</td>
+                    <td colspan="4"></td>
+                </tr>
+                <tr>
+                    <td>验光医生</td>
+                    <td>{{optometryUpdateData.optometryDoctor}}</td>
+                    <td>验光来源单位</td>
+                    <td>{{optometryUpdateData.optometrySourceName}}</td>
+                    <td>验光时间</td>
+                    <td>{{optometryUpdateData.optometryTime}}</td>
+                    <td>验光单类型</td>
+                    <td>{{optometryTypeData}}</td>
+                </tr>
+                <tr>
+                    <td>近加光ADD:</td>
+                    <td>{{optometryUpdateData.addd}}</td>
+                    <td>双眼瞳距</td>
+                    <td>{{optometryUpdateData.pd}}</td>
+                    <td>瞳高</td>
+                    <td>{{optometryUpdateData.vd}}</td>
+                    <td colspan="2"></td>
+                </tr>
+                <tr>
+                    <td>左眼轴位</td>
+                    <td>{{optometryUpdateData.axisL}}</td>
+                    <td>右眼轴位</td>
+                    <td>{{optometryUpdateData.axisR}}</td>
+                    <td>左眼散光度数</td>
+                    <td>{{optometryUpdateData.cylinderL}}</td>
+                    <td>右眼散光度数</td>
+                    <td>{{optometryUpdateData.cylinderR}}</td>
+                </tr>
+                <tr>
+                    <td>左眼度数</td>
+                    <td>{{optometryUpdateData.sphereL}}</td>
+                    <td>右眼度数</td>
+                    <td>{{optometryUpdateData.sphereR}}</td>
+                    <td>左眼矫正视力</td>
+                    <td>{{optometryUpdateData.distanceL}}</td>
+                    <td>右眼矫正视力</td>
+                    <td>{{optometryUpdateData.distanceR}}</td>
+                </tr>
+                <tr>
+                    <td>左眼视力</td>
+                    <td>{{optometryUpdateData.visionL}}</td>
+                    <td>右眼视力</td>
+                    <td>{{optometryUpdateData.visionR}}</td>
+                    <td colspan="4"></td>
+                </tr>
+                </tbody>
+            </table>
 
-                <div style="display: flex;flex-direction: row;align-items: center">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>用户编号:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.userId}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;margin-left: 30px">
-                        <text>验光者姓名:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.optometryPersonalName}}</text>
-                    </div>
-                </div>
-
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>验光医生:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.optometryDoctor}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>验光来源单位名称:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.optometrySourceName}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>验光时间:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.optometryTime}}</text>
-                    </div>
-                </div>
-
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <text>验光单类型:</text>
-                    <text style="margin-left: 12px">{{optometryTypeData}}</text>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <text>近加光ADD:</text>
-                    <text style="margin-left: 12px">{{optometryUpdateData.addd}}</text>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;">
-                        <text>左眼轴位:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.axisL}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;margin-left: 30px">
-                        <text>右眼轴位:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.axisR}}</text>
-                    </div>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>左眼散光度数:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.cylinderL}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>右眼散光度数:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.cylinderR}}</text>
-                    </div>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>左眼矫正视力:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.distanceL}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>右眼矫正视力:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.distanceR}}</text>
-                    </div>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>双眼瞳距:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.pd}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>瞳高:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.vd}}</text>
-                    </div>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>左眼度数:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.sphereL}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>右眼度数:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.sphereR}}</text>
-                    </div>
-                </div>
-                <div style="display: flex;flex-direction: row;align-items: center;margin-top: 18px">
-                    <div style="display: flex;flex-direction: row;align-items: center;">
-                        <text>左眼视力:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.visionL}}</text>
-                    </div>
-                    <div style="display: flex;flex-direction: row;align-items: center;margin-left: 30px">
-                        <text>右眼视力:</text>
-                        <text style="margin-left: 12px">{{optometryUpdateData.visionR}}</text>
-
-                    </div>
-                </div>
-
-            </div>
 
         </el-dialog>
 
@@ -712,4 +671,28 @@
         width: 40px;
         height: 40px;
     }
+
+    table {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #000; /* 添加表格边框 */
+        margin-bottom: 20px; /* 添加一些间距 */
+    }
+
+    td {
+        border: 1px solid #000; /* 添加单元格边框 */
+        padding: 8px;
+        text-align: left;
+    }
+
+    td:nth-child(odd) {
+        width: 88px; /* 固定奇数列宽度 */
+        height: 30px; /* 固定奇数列高度 */
+        background-color: #f2f2f2; /* 奇数列背景色 */
+    }
+    td:nth-child(even) {
+        text-align: center; /* 居中偶数列内容 */
+    }
+
+
 </style>
