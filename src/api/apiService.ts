@@ -1,4 +1,7 @@
 import axios, { AxiosInstance, AxiosError, AxiosResponse, AxiosRequestConfig } from 'axios';
+import vueRouter from '../router';
+import {ElMessage} from 'element-plus';
+
 
 const service: AxiosInstance = axios.create({
     baseURL: "http://47.111.162.112:8898",
@@ -18,6 +21,13 @@ service.interceptors.request.use(
 service.interceptors.response.use(
     (response: AxiosResponse) => {
         if (response.status === 200) {
+            const code = response.data.code;
+            const msg = response.data.msg;
+            if (code == 401) {
+                vueRouter.replace('/login');
+                ElMessage.error(msg);
+                return Promise.reject(response);
+            }
             return response;
         } else {
             return Promise.reject(response); // Reject with response for further error handling
