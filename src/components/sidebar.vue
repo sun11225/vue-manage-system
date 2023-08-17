@@ -68,12 +68,12 @@ const items = [
         title: '会员信息',
         permiss: '2',
     },
-    // {
-    //     icon: 'DocumentCopy',
-    //     index: '/optometry',
-    //     title: '验光单',
-    //     permiss: '3',
-    // },
+    {
+        icon: 'DocumentCopy',
+        index: '/optometry',
+        title: '验光单',
+        permiss: '3',
+    },
     // {
     //     icon: 'Calendar',
     //     index: '1',

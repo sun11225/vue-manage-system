@@ -82,23 +82,20 @@
 		<!-- 新增验光单 -->
 		<el-dialog title="新增验光单" v-model="addOptometryVisible" :show-close="false" width="70%">
 			<el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
-				<el-form-item label="用户编号" prop="userId">
+				<el-form-item label="会员号码" prop="userId">
 					<el-input v-model="optometryData.userId"></el-input>
 				</el-form-item>
-				<el-form-item label="验光者姓名" prop="optometryPersonalName">
+				<el-form-item label="会员姓名" prop="optometryPersonalName">
 					<el-input v-model="optometryData.optometryPersonalName"></el-input>
 				</el-form-item>
-				<el-form-item label="验光医生" prop="optometryDoctor">
+				<el-form-item label="验光师" prop="optometryDoctor">
 					<el-input v-model="optometryData.optometryDoctor"></el-input>
 				</el-form-item>
-				<el-form-item label="验光来源单位名称" prop="optometrySourceName">
+				<el-form-item label="验光门店" prop="optometrySourceName">
 					<el-input v-model="optometryData.optometrySourceName"></el-input>
 				</el-form-item>
 				<el-form-item label="验光时间" prop="optometryTime">
 					<el-input v-model="optometryData.optometryTime"></el-input>
-				</el-form-item>
-				<el-form-item label="近加光ADD" prop="addd">
-					<el-input v-model="optometryData.addd"></el-input>
 				</el-form-item>
 				<el-form-item label="验光单类型" prop="optometryType">
 					<el-select v-model="optometryData.optometryType" class="m-2" placeholder="Select">
@@ -110,43 +107,46 @@
 						></el-option>
 					</el-select>
 				</el-form-item>
-				<el-form-item label="左眼轴位" prop="axisL">
-					<el-input v-model="optometryData.axisL"></el-input>
-				</el-form-item>
-				<el-form-item label="右眼轴位" prop="axisR">
-					<el-input v-model="optometryData.axisR"></el-input>
-				</el-form-item>
-				<el-form-item label="左眼散光度数" prop="cylinderL">
-					<el-input v-model="optometryData.cylinderL"></el-input>
-				</el-form-item>
-				<el-form-item label="右眼散光度数" prop="cylinderR">
-					<el-input v-model="optometryData.cylinderR"></el-input>
-				</el-form-item>
-				<el-form-item label="左眼矫正视力" prop="distanceL">
-					<el-input v-model="optometryData.distanceL"></el-input>
-				</el-form-item>
-				<el-form-item label="右眼矫正视力" prop="distanceR">
-					<el-input v-model="optometryData.distanceR"></el-input>
-				</el-form-item>
-				<el-form-item label="双眼瞳距" prop="pd">
-					<el-input v-model="optometryData.pd"></el-input>
-				</el-form-item>
-				<el-form-item label="瞳高" prop="vd">
-					<el-input v-model="optometryData.vd"></el-input>
+				<el-form-item label="右眼度数" prop="sphereR">
+					<el-input v-model="optometryData.sphereR"></el-input>
 				</el-form-item>
 				<el-form-item label="左眼度数" prop="sphereL">
 					<el-input v-model="optometryData.sphereL"></el-input>
 				</el-form-item>
-				<el-form-item label="右眼度数" prop="sphereR">
-					<el-input v-model="optometryData.sphereR"></el-input>
+				<el-form-item label="右眼散光" prop="cylinderR">
+					<el-input v-model="optometryData.cylinderR"></el-input>
 				</el-form-item>
-				<el-form-item label="左眼视力" prop="visionL">
-					<el-input v-model="optometryData.visionL"></el-input>
+				<el-form-item label="左眼散光" prop="cylinderL">
+					<el-input v-model="optometryData.cylinderL"></el-input>
+				</el-form-item>
+				<el-form-item label="右眼轴位" prop="axisR">
+					<el-input v-model="optometryData.axisR"></el-input>
+				</el-form-item>
+				<el-form-item label="左眼轴位" prop="axisL">
+					<el-input v-model="optometryData.axisL"></el-input>
+				</el-form-item>
+				<el-form-item label="双眼瞳距" prop="pd">
+					<el-input v-model="optometryData.pd"></el-input>
+				</el-form-item>
+				<el-form-item label="近加光ADD" prop="addd">
+					<el-input v-model="optometryData.addd"></el-input>
+				</el-form-item>
+				<el-form-item label="右眼矫正视力" prop="distanceR">
+					<el-input v-model="optometryData.distanceR"></el-input>
+				</el-form-item>
+				<el-form-item label="左眼矫正视力" prop="distanceL">
+					<el-input v-model="optometryData.distanceL"></el-input>
 				</el-form-item>
 				<el-form-item label="右眼视力" prop="visionR">
 					<el-input v-model="optometryData.visionR"></el-input>
 				</el-form-item>
-                <el-form-item label="说明" prop="mark">
+				<el-form-item label="左眼视力" prop="visionL">
+					<el-input v-model="optometryData.visionL"></el-input>
+				</el-form-item>
+				<el-form-item label="瞳高" prop="vd">
+					<el-input v-model="optometryData.vd"></el-input>
+				</el-form-item>
+                <el-form-item label="备注" prop="mark">
                     <el-input v-model="optometryData.mark"></el-input>
                 </el-form-item>
 			</el-form>

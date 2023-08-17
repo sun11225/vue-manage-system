@@ -71,23 +71,20 @@
 
         <el-dialog title="编辑验光单" v-model="editOptometryDetailVisible" :show-close="false" width="70%">
             <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryUpdateData" ref="ruleFormRef">
-                <el-form-item label="用户编号" prop="userId">
+                <el-form-item label="会员号码" prop="userId">
                     <el-input v-model="optometryUpdateData.userId"></el-input>
                 </el-form-item>
-                <el-form-item label="验光者姓名" prop="optometryPersonalName">
+                <el-form-item label="会员姓名" prop="optometryPersonalName">
                     <el-input v-model="optometryUpdateData.optometryPersonalName"></el-input>
                 </el-form-item>
-                <el-form-item label="验光医生" prop="mark">
+                <el-form-item label="验光师" prop="optometryDoctor">
                     <el-input v-model="optometryUpdateData.optometryDoctor"></el-input>
                 </el-form-item>
-                <el-form-item label="验光来源单位名称" prop="optometrySourceName">
+                <el-form-item label="验光门店" prop="optometrySourceName">
                     <el-input v-model="optometryUpdateData.optometrySourceName"></el-input>
                 </el-form-item>
                 <el-form-item label="验光时间" prop="optometryTime">
                     <el-input v-model="optometryUpdateData.optometryTime"></el-input>
-                </el-form-item>
-                <el-form-item label="近加光ADD" prop="addd">
-                    <el-input v-model="optometryUpdateData.addd"></el-input>
                 </el-form-item>
                 <el-form-item label="验光单类型" prop="optometryType">
                     <el-select v-model="optometryTypeData" class="m-2" placeholder="Select">
@@ -99,41 +96,47 @@
                         ></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="左眼轴位" prop="axisL">
-                    <el-input v-model="optometryUpdateData.axisL"></el-input>
-                </el-form-item>
                 <el-form-item label="右眼轴位" prop="axisR">
                     <el-input v-model="optometryUpdateData.axisR"></el-input>
                 </el-form-item>
-                <el-form-item label="左眼散光度数" prop="cylinderL">
-                    <el-input v-model="optometryUpdateData.cylinderL"></el-input>
+                <el-form-item label="左眼轴位" prop="axisL">
+                    <el-input v-model="optometryUpdateData.axisL"></el-input>
                 </el-form-item>
                 <el-form-item label="右眼散光度数" prop="cylinderR">
                     <el-input v-model="optometryUpdateData.cylinderR"></el-input>
                 </el-form-item>
-                <el-form-item label="左眼矫正视力" prop="distanceL">
-                    <el-input v-model="optometryUpdateData.distanceL"></el-input>
+                <el-form-item label="左眼散光度数" prop="cylinderL">
+                    <el-input v-model="optometryUpdateData.cylinderL"></el-input>
                 </el-form-item>
                 <el-form-item label="右眼矫正视力" prop="distanceR">
                     <el-input v-model="optometryUpdateData.distanceR"></el-input>
                 </el-form-item>
+                <el-form-item label="左眼矫正视力" prop="distanceL">
+                    <el-input v-model="optometryUpdateData.distanceL"></el-input>
+                </el-form-item>
                 <el-form-item label="双眼瞳距" prop="pd">
                     <el-input v-model="optometryUpdateData.pd"></el-input>
                 </el-form-item>
-                <el-form-item label="瞳高" prop="vd">
-                    <el-input v-model="optometryUpdateData.vd"></el-input>
-                </el-form-item>
-                <el-form-item label="左眼度数" prop="sphereL">
-                    <el-input v-model="optometryUpdateData.sphereL"></el-input>
+                <el-form-item label="近加光ADD" prop="addd">
+                    <el-input v-model="optometryUpdateData.addd"></el-input>
                 </el-form-item>
                 <el-form-item label="右眼度数" prop="sphereR">
                     <el-input v-model="optometryUpdateData.sphereR"></el-input>
                 </el-form-item>
-                <el-form-item label="左眼视力" prop="visionL">
-                    <el-input v-model="optometryUpdateData.visionL"></el-input>
+                <el-form-item label="左眼度数" prop="sphereL">
+                    <el-input v-model="optometryUpdateData.sphereL"></el-input>
                 </el-form-item>
                 <el-form-item label="右眼视力" prop="visionR">
                     <el-input v-model="optometryUpdateData.visionR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼视力" prop="visionL">
+                    <el-input v-model="optometryUpdateData.visionL"></el-input>
+                </el-form-item>
+                <el-form-item label="瞳高" prop="vd">
+                    <el-input v-model="optometryUpdateData.vd"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="mark">
+                    <el-input v-model="optometryUpdateData.mark"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -148,16 +151,16 @@
             <table style="margin-top: -12px">
                 <tbody>
                 <tr>
-                    <td>用户编号</td>
+                    <td>会员号码</td>
                     <td>{{optometryUpdateData.userId}}</td>
-                    <td>验光者姓名</td>
+                    <td>会员姓名</td>
                     <td>{{optometryUpdateData.optometryPersonalName}}</td>
                     <td colspan="4"></td>
                 </tr>
                 <tr>
-                    <td>验光医生</td>
+                    <td>验光师</td>
                     <td>{{optometryUpdateData.optometryDoctor}}</td>
-                    <td>验光来源单位</td>
+                    <td>验光门店</td>
                     <td>{{optometryUpdateData.optometrySourceName}}</td>
                     <td>验光时间</td>
                     <td>{{optometryUpdateData.optometryTime}}</td>
@@ -165,40 +168,44 @@
                     <td>{{optometryTypeData}}</td>
                 </tr>
                 <tr>
+                    <td>右眼轴位</td>
+                    <td>{{optometryUpdateData.axisR}}</td>
+                    <td>左眼轴位</td>
+                    <td>{{optometryUpdateData.axisL}}</td>
+                    <td>右眼散光度数</td>
+                    <td>{{optometryUpdateData.cylinderR}}</td>
+                    <td>左眼散光度数</td>
+                    <td>{{optometryUpdateData.cylinderL}}</td>
+                </tr>
+                <tr>
+                    <td>右眼度数</td>
+                    <td>{{optometryUpdateData.sphereR}}</td>
+                    <td>左眼度数</td>
+                    <td>{{optometryUpdateData.sphereL}}</td>
+                    <td>右眼矫正视力</td>
+                    <td>{{optometryUpdateData.distanceR}}</td>
+                    <td>左眼矫正视力</td>
+                    <td>{{optometryUpdateData.distanceL}}</td>
+                </tr>
+                <tr>
+
                     <td>近加光ADD:</td>
                     <td>{{optometryUpdateData.addd}}</td>
                     <td>双眼瞳距</td>
                     <td>{{optometryUpdateData.pd}}</td>
+                    <td>右眼视力</td>
+                    <td>{{optometryUpdateData.visionR}}</td>
+                    <td>左眼视力</td>
+                    <td>{{optometryUpdateData.visionL}}</td>
+                </tr>
+                <tr>
+                    <td>右眼视力</td>
+                    <td>{{optometryUpdateData.visionR}}</td>
+                    <td>左眼视力</td>
+                    <td>{{optometryUpdateData.visionL}}</td>
                     <td>瞳高</td>
                     <td>{{optometryUpdateData.vd}}</td>
                     <td colspan="2"></td>
-                </tr>
-                <tr>
-                    <td>左眼轴位</td>
-                    <td>{{optometryUpdateData.axisL}}</td>
-                    <td>右眼轴位</td>
-                    <td>{{optometryUpdateData.axisR}}</td>
-                    <td>左眼散光度数</td>
-                    <td>{{optometryUpdateData.cylinderL}}</td>
-                    <td>右眼散光度数</td>
-                    <td>{{optometryUpdateData.cylinderR}}</td>
-                </tr>
-                <tr>
-                    <td>左眼度数</td>
-                    <td>{{optometryUpdateData.sphereL}}</td>
-                    <td>右眼度数</td>
-                    <td>{{optometryUpdateData.sphereR}}</td>
-                    <td>左眼矫正视力</td>
-                    <td>{{optometryUpdateData.distanceL}}</td>
-                    <td>右眼矫正视力</td>
-                    <td>{{optometryUpdateData.distanceR}}</td>
-                </tr>
-                <tr>
-                    <td>左眼视力</td>
-                    <td>{{optometryUpdateData.visionL}}</td>
-                    <td>右眼视力</td>
-                    <td>{{optometryUpdateData.visionR}}</td>
-                    <td colspan="4"></td>
                 </tr>
                 </tbody>
             </table>
