@@ -23,11 +23,11 @@ service.interceptors.response.use(
         if (response.status === 200) {
             const code = response.data.code;
             const msg = response.data.msg;
-            // if (code == 401) {
-            //     vueRouter.replace('/login');
-            //     ElMessage.error(msg);
-            //     return Promise.reject(response);
-            // }
+            if (code == 401) {
+                vueRouter.replace('/login');
+                ElMessage.error(msg);
+                return Promise.reject(response);
+            }
             return response;
         } else {
             return Promise.reject(response); // Reject with response for further error handling
