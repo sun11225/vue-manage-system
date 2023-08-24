@@ -8,7 +8,7 @@
                 <!--				</el-select>-->
                 <el-input v-model="queryUserId" placeholder="请输入用户ID" class="handle-input mr10"></el-input>
                 <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
-                <!--                <el-button type="primary" :icon="Plus" @click="clickAddUser">新增</el-button>-->
+                <el-button type="primary" :icon="Plus" @click="addOptometryData">新增</el-button>
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable"
                       header-cell-class-username="table-header">
@@ -213,6 +213,85 @@
 
         </el-dialog>
 
+<!--         新增验光单 -->
+        <el-dialog title="新增验光单" v-model="addOptometryVisible" :show-close="false" width="70%">
+            <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
+                <el-form-item label="会员号码" prop="userId">
+                    <el-input v-model="optometryData.userId"></el-input>
+                </el-form-item>
+                <el-form-item label="会员姓名" prop="optometryPersonalName">
+                    <el-input v-model="optometryData.optometryPersonalName"></el-input>
+                </el-form-item>
+                <el-form-item label="验光师" prop="optometryDoctor">
+                    <el-input v-model="optometryData.optometryDoctor"></el-input>
+                </el-form-item>
+                <el-form-item label="验光门店" prop="optometrySourceName">
+                    <el-input v-model="optometryData.optometrySourceName"></el-input>
+                </el-form-item>
+                <el-form-item label="验光时间" prop="optometryTime">
+                    <el-input v-model="optometryData.optometryTime"></el-input>
+                </el-form-item>
+                <el-form-item label="验光单类型" prop="optometryType">
+                    <el-select v-model="optometryTypeData" class="m-2" placeholder="Select">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.label"
+                                :label="item.label"
+                                :value="item.value"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="右眼度数" prop="sphereR">
+                    <el-input v-model="optometryData.sphereR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼度数" prop="sphereL">
+                    <el-input v-model="optometryData.sphereL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼散光" prop="cylinderR">
+                    <el-input v-model="optometryData.cylinderR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼散光" prop="cylinderL">
+                    <el-input v-model="optometryData.cylinderL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼轴位" prop="axisR">
+                    <el-input v-model="optometryData.axisR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼轴位" prop="axisL">
+                    <el-input v-model="optometryData.axisL"></el-input>
+                </el-form-item>
+                <el-form-item label="双眼瞳距" prop="pd">
+                    <el-input v-model="optometryData.pd"></el-input>
+                </el-form-item>
+                <el-form-item label="近加光ADD" prop="addd">
+                    <el-input v-model="optometryData.addd"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼矫正视力" prop="distanceR">
+                    <el-input v-model="optometryData.distanceR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼矫正视力" prop="distanceL">
+                    <el-input v-model="optometryData.distanceL"></el-input>
+                </el-form-item>
+                <el-form-item label="右眼视力" prop="visionR">
+                    <el-input v-model="optometryData.visionR"></el-input>
+                </el-form-item>
+                <el-form-item label="左眼视力" prop="visionL">
+                    <el-input v-model="optometryData.visionL"></el-input>
+                </el-form-item>
+                <el-form-item label="瞳高" prop="vd">
+                    <el-input v-model="optometryData.vd"></el-input>
+                </el-form-item>
+                <el-form-item label="备注" prop="mark">
+                    <el-input v-model="optometryData.mark"></el-input>
+                </el-form-item>
+            </el-form>
+            <template #footer>
+				<span class="dialog-footer">
+					<el-button @click="resetForm(ruleFormRef)">取 消</el-button>
+					<el-button type="primary" @click="addForm(ruleFormRef)">确 定</el-button>
+				</span>
+            </template>
+        </el-dialog>
+
 
     </div>
 </template>
@@ -395,6 +474,8 @@
     let optometryDetailVisible = ref<boolean>(false);
     let editOptometryDetailVisible = ref<boolean>(false);
     let optometryTypeData = ref();
+    const addOptometryVisible = ref(false);
+
 
 
     interface TableItem {
@@ -449,31 +530,32 @@
         createTime: "",
     });
 
+    const optometryData = reactive({
+        addd: "",
+        axisL: "",
+        axisR: "",
+        cylinderL: "",
+        cylinderR: "",
+        distanceL: "",
+        distanceR: "",
+        mark: "",
+        optometryDoctor: "",
+        optometryPersonalName: "",
+        optometrySourceName: "",
+        optometryTime: "",
+        optometryType: 1,
+        pd: "",
+        sphereL: "",
+        sphereR: "",
+        userId: "",
+        vd: "",
+        visionL: "",
+        visionR: ""
+    });
+
 
     onMounted(() => {
-        if (route.query.id) {
-            console.log('Sun >>> id === ' + route.query.id);
-            userId.value = route.query.id as string;
-            const data = {
-                userId: userId.value,
-                curPage: query.curPage,
-                pageSize: query.pageSize,
-            };
-            apiService.fetchPostData(apiUrls.queryOptometry, data).then((res) => {
-                if (res.code != 200) {
-                    return
-                }
-                ElMessage.success('查询验光单成功');
-                tableData.value = res.data;
-                query.curPage = res.pageInfo.curPage;
-                query.pageSize = res.pageInfo.pageSize;
-                query.totalCount = res.pageInfo.totalCount;
-                query.totalPage = res.pageInfo.totalPage;
-                console.log('Sun >>> === ' + JSON.stringify(query))
-
-            })
-        }
-
+        getData();
     });
 
     // 获取表格数据
@@ -589,13 +671,25 @@
 
     // 查询操作
     const handleSearch = () => {
-        if (queryUserId.value != "") {
+        // if (queryUserId.value != "") {
             query.curPage = 1;
             userId.value = queryUserId.value;
             getData();
-        } else {
-            ElMessage.error("请输入正确的用户ID")
-        }
+        // } else {
+        //     ElMessage.error("请输入正确的用户ID")
+        // }
+    };
+
+    //新增验光单
+    const addOptometryData = () => {
+        addOptometryVisible.value = true;
+    };
+
+    //重置
+    const resetForm = (formEl: FormInstance | undefined) => {
+        if (!formEl) return;
+        addOptometryVisible.value = false;
+        formEl.resetFields()
     };
 
     const closeForm = (formEl: FormInstance | undefined) => {
@@ -618,6 +712,33 @@
             ElMessage.success("修改成功");
             getData();
             editOptometryDetailVisible.value = false;
+        })
+    };
+
+    //新增验光单
+    const addForm = async (formEl: FormInstance | undefined) => {
+        if (!formEl) return;
+        if (optometryTypeData.value == "框架眼镜验光单") {
+            optometryData.optometryType = 1;
+        } else {
+            optometryData.optometryType = optometryTypeData.value
+        }
+        await formEl.validate((valid, fields) => {
+            if (valid) {
+                apiService.fetchPostData(apiUrls.addOptometry,optometryData).then((res) => {
+                    if(res.code != 200){
+                        ElMessage.error(res.msg);
+                        return
+                    }
+                    ElMessage.success('新增验光单成功');
+                    formEl.resetFields();
+                    addOptometryVisible.value = false;
+                    getData();
+
+                })
+            } else {
+                console.log('error submit!', fields)
+            }
         })
     };
 

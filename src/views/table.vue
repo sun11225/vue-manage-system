@@ -38,14 +38,17 @@
 <!--				</el-table-column>-->
 
 				<el-table-column prop="grade" label="会员等级"></el-table-column>
-				<el-table-column label="验光单" width="240" align="center">
+				<el-table-column label="会员档案" width="240" align="center">
 					<template #default="scope">
-						<el-button text :icon="Edit" type="primary"  @click="addOptometryData">
-							新增
+						<el-button text :icon="Edit" type="primary"  @click="editVipInfo">
+							编辑
 						</el-button>
-						<el-button text :icon="Search" type="success" @click="queryOptometryData(scope.$index, scope.row)">
-							查询
-						</el-button>
+<!--						<el-button text :icon="Edit" type="primary"  @click="addOptometryData">-->
+<!--							新增-->
+<!--						</el-button>-->
+<!--						<el-button text :icon="Search" type="success" @click="queryOptometryData(scope.$index, scope.row)">-->
+<!--							查询-->
+<!--						</el-button>-->
 					</template>
 				</el-table-column>
 			</el-table>
@@ -412,6 +415,7 @@ const getVipUserInfo = () => {
 //重置
 const handleReset = () => {
 	query.curPage = 1;
+	mobilePhone.value = "";
 	getData()
 };
 
@@ -441,6 +445,11 @@ const handleDelete = (index: number) => {
 			tableData.value.splice(index, 1);
 		})
 		.catch(() => {});
+};
+
+//预留编辑会员信息
+const editVipInfo = () => {
+	ElMessage.error('待实现');
 };
 
 //新增验光单
