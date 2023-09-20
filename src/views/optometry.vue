@@ -6,7 +6,7 @@
                 <!--					<el-option key="1" label="广东省" value="广东省"></el-option>-->
                 <!--					<el-option key="2" label="湖南省" value="湖南省"></el-option>-->
                 <!--				</el-select>-->
-                <el-input v-model="queryUserId" placeholder="请输入用户ID" class="handle-input mr10"></el-input>
+                <el-input v-model="mobilePhone" placeholder="请输入手机号" class="handle-input mr10"></el-input>
                 <el-button type="primary" :icon="Search" @click="handleSearch">搜索</el-button>
                 <el-button type="primary" :icon="Plus" @click="addOptometryData">新增</el-button>
             </div>
@@ -475,6 +475,7 @@
     let editOptometryDetailVisible = ref<boolean>(false);
     let optometryTypeData = ref();
     const addOptometryVisible = ref(false);
+    const mobilePhone = ref("");
 
 
 
@@ -561,7 +562,8 @@
     // 获取表格数据
     const getData = () => {
         const data = {
-            userId: userId.value,
+            mobile: mobilePhone.value,
+            // userId: userId.value,
             curPage: query.curPage,
             pageSize: query.pageSize,
         };
@@ -673,7 +675,7 @@
     const handleSearch = () => {
         // if (queryUserId.value != "") {
             query.curPage = 1;
-            userId.value = queryUserId.value;
+            // userId.value = queryUserId.value;
             getData();
         // } else {
         //     ElMessage.error("请输入正确的用户ID")
