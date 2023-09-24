@@ -38,19 +38,19 @@
 <!--				</el-table-column>-->
 
 				<el-table-column prop="grade" label="会员等级"></el-table-column>
-				<el-table-column label="会员档案" width="240" align="center">
-					<template #default="scope">
-						<el-button text :icon="Edit" type="primary"  @click="editVipInfo">
-							编辑
-						</el-button>
+<!--				<el-table-column label="会员档案" width="240" align="center">-->
+<!--					<template #default="scope">-->
+<!--						<el-button text :icon="Edit" type="primary"  @click="editVipInfo">-->
+<!--							编辑-->
+<!--						</el-button>-->
 <!--						<el-button text :icon="Edit" type="primary"  @click="addOptometryData">-->
 <!--							新增-->
 <!--						</el-button>-->
 <!--						<el-button text :icon="Search" type="success" @click="queryOptometryData(scope.$index, scope.row)">-->
 <!--							查询-->
 <!--						</el-button>-->
-					</template>
-				</el-table-column>
+<!--					</template>-->
+<!--				</el-table-column>-->
 			</el-table>
 			<div class="pagination">
 				<el-pagination
@@ -389,6 +389,7 @@ const getData = () => {
 		query.pageSize = res.pageInfo.pageSize;
 		query.totalCount = res.pageInfo.totalCount;
 		query.totalPage =  res.pageInfo.totalPage;
+		ElMessage.success("成功");
 	});
 };
 
