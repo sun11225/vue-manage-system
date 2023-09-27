@@ -216,6 +216,16 @@
 <!--         新增验光单 -->
         <el-dialog title="新增验光单" v-model="addOptometryVisible" :show-close="false" width="70%">
             <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
+                <el-form-item label="会员手机号" style="width: 100%;">
+                    <el-select v-model="optometryPhoneData" @change="handleUserIdChange" class="m-2" placeholder="Select">
+                        <el-option
+                                v-for="item in userOptions"
+                                :key="item.label"
+                                :label="item.label"
+                                :value="item.value"
+                        ></el-option>
+                    </el-select>
+                </el-form-item>
                 <el-form-item label="会员号码" prop="userId">
                     <el-input v-model="optometryData.userId"></el-input>
                 </el-form-item>
@@ -304,6 +314,14 @@
     import {apiUrls} from '../api/apiUrls';
     import {useRouter, useRoute} from 'vue-router';
     import {FormInstance, FormRules} from 'element-plus';
+    import { useInfoStore } from '../store/userInfo';
+
+    const userStore = useInfoStore();
+
+    const userOptions = userStore.users.map((user) => ({
+        value: user.phoneNumber,
+        label: user.phoneNumber,
+    }));
 
     const options = [
         {
@@ -474,6 +492,7 @@
     let optometryDetailVisible = ref<boolean>(false);
     let editOptometryDetailVisible = ref<boolean>(false);
     let optometryTypeData = ref();
+    let optometryPhoneData = ref();
     const addOptometryVisible = ref(false);
     const mobilePhone = ref("");
 
@@ -558,6 +577,22 @@
     onMounted(() => {
         getData();
     });
+
+    const handleUserIdChange = () => {
+        const selectedUser = userOptions.find(option => option.value === optometryPhoneData.value);
+        console.log('Sun >>> optometryPhoneData value == ' + optometryPhoneData.value);
+        if (selectedUser){
+            const user = userStore.getUserByPhone(optometryPhoneData.value);
+            if (user) {
+                optometryData.optometryPersonalName = user.name;
+                optometryData.userId = user.userId;
+            } else {
+                optometryData.optometryPersonalName = '';
+                optometryData.userId = '';
+            }
+        }
+
+    };
 
     // 获取表格数据
     const getData = () => {

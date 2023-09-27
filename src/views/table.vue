@@ -12,7 +12,7 @@
 			</div>
 			<el-table :data="tableData" border class="table" ref="multipleTable" header-cell-class-username="table-header">
 				<el-table-column prop="id" label="会员ID" align="center"></el-table-column>
-				<el-table-column prop="username" label="用户名"></el-table-column>
+				<el-table-column prop="nickname" label="用户名"></el-table-column>
 				<el-table-column prop="mobile" label="手机号"></el-table-column>
 <!--				<el-table-column label="头像(查看大图)" align="center">-->
 <!--					<template #default="scope">-->
@@ -170,11 +170,15 @@
 	import {apiService} from '../api/apiService';
 	import {apiUrls} from '../api/apiUrls';
 	import {useRouter} from 'vue-router';
+	import { useInfoStore } from '../store/userInfo';
+
 	import { Delete, Edit, Search, Plus } from '@element-plus/icons-vue';
 
 	const router = useRouter();
+	const userStore = useInfoStore();
 
-const options = [
+
+	const options = [
 	{
 		value: '1',
 		label: '框架眼镜验光单',
@@ -390,6 +394,16 @@ const getData = () => {
 		query.totalCount = res.pageInfo.totalCount;
 		query.totalPage =  res.pageInfo.totalPage;
 		ElMessage.success("成功");
+
+		userStore.clearUsers();
+		tableData.value.forEach((user) => {
+			userStore.addUser({
+				userId: user.id,
+			    phoneNumber: user.mobile,
+			    name: user.nickname
+			})
+		})
+
 	});
 };
 
