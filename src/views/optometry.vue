@@ -216,20 +216,23 @@
 <!--         新增验光单 -->
         <el-dialog title="新增验光单" v-model="addOptometryVisible" :show-close="false" width="70%">
             <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
-                <el-form-item label="会员手机号" style="width: 100%;">
-                    <el-select v-model="optometryPhoneData" @change="handleUserIdChange" class="m-2" placeholder="Select">
-                        <el-option
-                                v-for="item in userOptions"
-                                :key="item.label"
-                                :label="item.label"
-                                :value="item.value"
-                        ></el-option>
-                    </el-select>
-                </el-form-item>
-                <el-form-item label="会员号码" prop="userId">
+<!--                <el-form-item  style="display: flex;flex:1;align-items: center">-->
+                <div style="width: 100% ;text-align: center;" >
+                    <el-button type="primary" :icon="Search" @click="handleUserSearch">选择用户</el-button>
+                </div>
+<!--                    <el-select v-model="optometryPhoneData" @change="handleUserIdChange" class="m-2" placeholder="Select">-->
+<!--                        <el-option-->
+<!--                                v-for="item in userOptions"-->
+<!--                                :key="item.label"-->
+<!--                                :label="item.label"-->
+<!--                                :value="item.value"-->
+<!--                        ></el-option>-->
+<!--                    </el-select>-->
+<!--                </el-form-item>-->
+                <el-form-item label="会员号码" prop="userId" style="margin-top: 20px">
                     <el-input v-model="optometryData.userId"></el-input>
                 </el-form-item>
-                <el-form-item label="会员姓名" prop="optometryPersonalName">
+                <el-form-item label="会员姓名" prop="optometryPersonalName" style="margin-top: 20px">
                     <el-input v-model="optometryData.optometryPersonalName"></el-input>
                 </el-form-item>
                 <el-form-item label="验光师" prop="optometryDoctor">
@@ -302,6 +305,31 @@
             </template>
         </el-dialog>
 
+        <el-dialog title="请选择用户" v-model="userVisible" :show-close="false" width="88%">
+            <div class="handle-box">
+                <el-input v-model="mobilePhone" placeholder="请输入手机号" class="handle-input mr10" maxlength ="11"></el-input>
+                <el-button type="primary" :icon="Search" @click="userHandleSearch">搜索</el-button>
+            </div>
+            <el-table :data="userTableData" border class="table" ref="multipleTable"
+                      highlight-current-row  @row-click="handleRowClick"
+                      header-cell-class-username="table-header">
+                <el-table-column prop="id" label="会员ID" align="center"></el-table-column>
+                <el-table-column prop="nickname" label="用户名"></el-table-column>
+                <el-table-column prop="mobile" label="手机号"></el-table-column>
+                <el-table-column prop="address" label="地址"></el-table-column>
+                <el-table-column prop="grade" label="会员等级"></el-table-column>
+            </el-table>
+            <div class="pagination">
+                <el-pagination
+                        background
+                        layout="total, prev, pager, next"
+                        :current-page="userQuery.curPage"
+                        :page-size="userQuery.pageSize"
+                        :total="userQuery.totalCount"
+                        @current-change="handleUserPageChange"
+                ></el-pagination>
+            </div>
+        </el-dialog>
 
     </div>
 </template>
@@ -340,6 +368,17 @@
         totalCount: 0,
         totalPage: 0,
     });
+
+    let userQuery = reactive({
+        curPage: 1,
+        pageSize: 10,
+        totalCount: 0,
+        totalPage: 0,
+    });
+
+    let userTableData = ref<UserTableItem[]>([]);
+
+
     const rules: FormRules = {
         addd: [
             {
@@ -494,9 +533,25 @@
     let optometryTypeData = ref();
     let optometryPhoneData = ref();
     const addOptometryVisible = ref(false);
+    const userVisible = ref(false);
     const mobilePhone = ref("");
 
 
+    interface UserTableItem {
+        email: string,
+        headPortraitUrl: string,
+        id: string;
+        //验光ID
+        lastOptometryId: string,
+        mobile: string;
+        username: string;
+        nickname: string,
+        address: string;
+        //会员等级
+        grade: string,
+        state: string;
+        date: string;
+    }
 
     interface TableItem {
         id: string,
@@ -577,6 +632,36 @@
     onMounted(() => {
         getData();
     });
+
+    // 获取表格数据
+    const getUserData = () => {
+        const data = {
+            curPage: userQuery.curPage,
+            pageSize: userQuery.pageSize,
+        };
+        apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
+            userTableData.value = res.data;
+            userQuery.curPage = res.pageInfo.curPage;
+            userQuery.pageSize = res.pageInfo.pageSize;
+            userQuery.totalCount = res.pageInfo.totalCount;
+            userQuery.totalPage =  res.pageInfo.totalPage;
+        });
+    };
+
+    // 分页导航
+    const handleUserPageChange = (val: number) => {
+        userQuery.curPage = val;
+        getUserData();
+    };
+
+    const handleRowClick = (row: UserTableItem, column: any, event: any) => {
+        // Handle row click event, row contains the clicked row data
+        console.log('Clicked row:' + row);
+        optometryData.optometryPersonalName = row.nickname;
+        optometryData.userId = row.id;
+        userVisible.value = false;
+        mobilePhone.value = "";
+    };
 
     const handleUserIdChange = () => {
         const selectedUser = userOptions.find(option => option.value === optometryPhoneData.value);
@@ -716,6 +801,39 @@
         //     ElMessage.error("请输入正确的用户ID")
         // }
     };
+
+    // 查询操作
+    const userHandleSearch = () => {
+        if(mobilePhone.value != "") {
+            query.curPage = 1;
+            getVipUserInfo();
+        } else {
+            ElMessage.error("请输入正确的手机号")
+        }
+    };
+
+    const getVipUserInfo = () => {
+        const data = {
+            mobile: mobilePhone.value,
+            curPage: query.curPage,
+            pageSize: query.pageSize,
+        };
+        apiService.fetchPostData(apiUrls.getUserList,data).then(res => {
+            ElMessage.success("搜索成功");
+            userTableData.value = res.data;
+            userQuery.curPage = res.pageInfo.curPage;
+            userQuery.pageSize = res.pageInfo.pageSize;
+            userQuery.totalCount = res.pageInfo.totalCount;
+            userQuery.totalPage =  res.pageInfo.totalPage;
+        });
+    };
+
+
+    const handleUserSearch = () => {
+        getUserData();
+        userVisible.value = true;
+    };
+
 
     //新增验光单
     const addOptometryData = () => {
