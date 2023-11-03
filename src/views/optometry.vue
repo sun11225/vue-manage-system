@@ -242,7 +242,15 @@
                     <el-input v-model="optometryData.optometrySourceName"></el-input>
                 </el-form-item>
                 <el-form-item label="验光时间" prop="optometryTime">
-                    <el-input v-model="optometryData.optometryTime"></el-input>
+                    <el-date-picker
+                            v-model = "optometryData.optometryTime"
+                            type="date"
+                            placeholder="Pick a day"
+                            format="YYYY/MM/DD"
+                            value-format="YYYY-MM-DD">
+
+                    </el-date-picker>
+<!--                    <el-input v-model="optometryData.optometryTime"></el-input>-->
                 </el-form-item>
                 <el-form-item label="验光单类型" prop="optometryType">
                     <el-select v-model="optometryTypeData" class="m-2" placeholder="Select">
