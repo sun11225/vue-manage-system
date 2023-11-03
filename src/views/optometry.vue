@@ -12,7 +12,7 @@
             </div>
             <el-table :data="tableData" border class="table" ref="multipleTable"
                       header-cell-class-username="table-header">
-                <el-table-column prop="userId" label="用户ID" align="center"></el-table-column>
+                <el-table-column prop="mobile" label="会员号码" align="center"></el-table-column>
                 <el-table-column prop="optometryPersonalName" label="验光者姓名"></el-table-column>
                 <!--				<el-table-column label="头像(查看大图)" align="center">-->
                 <!--					<template #default="scope">-->
@@ -70,9 +70,9 @@
         </div>
 
         <el-dialog title="编辑验光单" v-model="editOptometryDetailVisible" :show-close="false" width="70%">
-            <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryUpdateData" ref="ruleFormRef">
-                <el-form-item label="会员号码" prop="userId">
-                    <el-input v-model="optometryUpdateData.userId"></el-input>
+            <el-form label-width="150px" :inline="true" :rules="rules" :model="optometryUpdateData" ref="ruleFormRef">
+                <el-form-item label="会员号码" prop="mobile">
+                    <el-input v-model="optometryUpdateData.mobile"></el-input>
                 </el-form-item>
                 <el-form-item label="会员姓名" prop="optometryPersonalName">
                     <el-input v-model="optometryUpdateData.optometryPersonalName"></el-input>
@@ -84,7 +84,15 @@
                     <el-input v-model="optometryUpdateData.optometrySourceName"></el-input>
                 </el-form-item>
                 <el-form-item label="验光时间" prop="optometryTime">
-                    <el-input v-model="optometryUpdateData.optometryTime"></el-input>
+                    <el-date-picker
+                            v-model = "optometryUpdateData.optometryTime"
+                            type="date"
+                            placeholder="Pick a day"
+                            format="YYYY/MM/DD"
+                            value-format="YYYY-MM-DD">
+
+                    </el-date-picker>
+<!--                    <el-input v-model="optometryUpdateData.optometryTime"></el-input>-->
                 </el-form-item>
                 <el-form-item label="验光单类型" prop="optometryType">
                     <el-select v-model="optometryTypeData" class="m-2" placeholder="Select">
@@ -135,8 +143,8 @@
                 <el-form-item label="瞳高" prop="vd">
                     <el-input v-model="optometryUpdateData.vd"></el-input>
                 </el-form-item>
-                <el-form-item label="备注" prop="mark">
-                    <el-input v-model="optometryUpdateData.mark"></el-input>
+                <el-form-item label="备注" prop="mark" style="width: 60%">
+                    <el-input v-model="optometryUpdateData.mark" type="textarea"></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -152,7 +160,7 @@
                 <tbody>
                 <tr>
                     <td>会员号码</td>
-                    <td>{{optometryUpdateData.userId}}</td>
+                    <td>{{optometryUpdateData.mobile}}</td>
                     <td>会员姓名</td>
                     <td>{{optometryUpdateData.optometryPersonalName}}</td>
                     <td colspan="4"></td>
@@ -207,6 +215,10 @@
                     <td>{{optometryUpdateData.vd}}</td>
                     <td colspan="2"></td>
                 </tr>
+                <tr>
+                    <td >备注</td>
+                    <td colspan="7">{{optometryUpdateData.mark}}</td>
+                </tr>
                 </tbody>
             </table>
 
@@ -215,7 +227,7 @@
 
 <!--         新增验光单 -->
         <el-dialog title="新增验光单" v-model="addOptometryVisible" :show-close="false" width="70%">
-            <el-form label-width="140px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
+            <el-form label-width="150px" :inline="true" :rules="rules" :model="optometryData" ref="ruleFormRef">
 <!--                <el-form-item  style="display: flex;flex:1;align-items: center">-->
                 <div style="width: 100% ;text-align: center;" >
                     <el-button type="primary" :icon="Search" @click="handleUserSearch">选择用户</el-button>
@@ -229,8 +241,8 @@
 <!--                        ></el-option>-->
 <!--                    </el-select>-->
 <!--                </el-form-item>-->
-                <el-form-item label="会员号码" prop="userId" style="margin-top: 20px">
-                    <el-input v-model="optometryData.userId"></el-input>
+                <el-form-item label="会员号码" prop="mobile" style="margin-top: 20px">
+                    <el-input v-model="optometryData.mobile"></el-input>
                 </el-form-item>
                 <el-form-item label="会员姓名" prop="optometryPersonalName" style="margin-top: 20px">
                     <el-input v-model="optometryData.optometryPersonalName"></el-input>
@@ -268,11 +280,17 @@
                 <el-form-item label="左眼度数" prop="sphereL">
                     <el-input v-model="optometryData.sphereL"></el-input>
                 </el-form-item>
+                <el-form-item label="瞳距" prop="pd">
+                    <el-input v-model="optometryData.pd"></el-input>
+                </el-form-item>
                 <el-form-item label="右眼散光" prop="cylinderR">
                     <el-input v-model="optometryData.cylinderR"></el-input>
                 </el-form-item>
                 <el-form-item label="左眼散光" prop="cylinderL">
                     <el-input v-model="optometryData.cylinderL"></el-input>
+                </el-form-item>
+                <el-form-item label="下加光(ADD)" prop="addd">
+                    <el-input v-model="optometryData.addd"></el-input>
                 </el-form-item>
                 <el-form-item label="右眼轴位" prop="axisR">
                     <el-input v-model="optometryData.axisR"></el-input>
@@ -280,11 +298,8 @@
                 <el-form-item label="左眼轴位" prop="axisL">
                     <el-input v-model="optometryData.axisL"></el-input>
                 </el-form-item>
-                <el-form-item label="双眼瞳距" prop="pd">
-                    <el-input v-model="optometryData.pd"></el-input>
-                </el-form-item>
-                <el-form-item label="近加光ADD" prop="addd">
-                    <el-input v-model="optometryData.addd"></el-input>
+                <el-form-item label="瞳高" prop="vd">
+                    <el-input v-model="optometryData.vd"></el-input>
                 </el-form-item>
                 <el-form-item label="右眼矫正视力" prop="distanceR">
                     <el-input v-model="optometryData.distanceR"></el-input>
@@ -298,11 +313,8 @@
                 <el-form-item label="左眼视力" prop="visionL">
                     <el-input v-model="optometryData.visionL"></el-input>
                 </el-form-item>
-                <el-form-item label="瞳高" prop="vd">
-                    <el-input v-model="optometryData.vd"></el-input>
-                </el-form-item>
-                <el-form-item label="备注" prop="mark">
-                    <el-input v-model="optometryData.mark"></el-input>
+                <el-form-item label="备注" prop="mark" style="width: 60%">
+                    <el-input v-model="optometryData.mark"  type="textarea" ></el-input>
                 </el-form-item>
             </el-form>
             <template #footer>
@@ -585,6 +597,7 @@
         visionL: string,
         visionR: string,
         createTime: string,
+        mobile: string,
     }
 
     let optometryUpdateData = reactive<TableItem>({
@@ -611,6 +624,7 @@
         visionL: "",
         visionR: "",
         createTime: "",
+        mobile: "",
     });
 
     const optometryData = reactive({
@@ -633,7 +647,8 @@
         userId: "",
         vd: "",
         visionL: "",
-        visionR: ""
+        visionR: "",
+        mobile: ""
     });
 
 
@@ -666,7 +681,8 @@
         // Handle row click event, row contains the clicked row data
         console.log('Clicked row:' + row);
         optometryData.optometryPersonalName = row.nickname;
-        optometryData.userId = row.id;
+        // optometryData.userId = row.id;
+        optometryData.mobile = row.mobile;
         userVisible.value = false;
         mobilePhone.value = "";
     };
@@ -741,6 +757,7 @@
             optometryUpdateData.visionL = res.data.visionL;
             optometryUpdateData.visionR = res.data.visionR;
             optometryUpdateData.createTime = res.data.createTime;
+            optometryUpdateData.mobile = res.data.mobile;
             if (optometryUpdateData.optometryType == 1) {
                 optometryTypeData.value = "框架眼镜验光单"
             } else {
@@ -784,6 +801,7 @@
             optometryUpdateData.visionL = res.data.visionL;
             optometryUpdateData.visionR = res.data.visionR;
             optometryUpdateData.createTime = res.data.createTime;
+            optometryUpdateData.mobile = res.data.mobile;
             if (optometryUpdateData.optometryType == 1) {
                 optometryTypeData.value = "框架眼镜验光单"
             } else {
