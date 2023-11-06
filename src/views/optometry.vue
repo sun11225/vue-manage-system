@@ -683,6 +683,7 @@
         optometryData.optometryPersonalName = row.nickname;
         // optometryData.userId = row.id;
         optometryData.mobile = row.mobile;
+        optometryData.userId = row.id;
         userVisible.value = false;
         mobilePhone.value = "";
     };
